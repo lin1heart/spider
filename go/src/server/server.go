@@ -1,13 +1,13 @@
 package server
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"fmt"
 )
 
-func StartServer () {
+func StartServer() {
 	fmt.Printf("start server")
 
 	helloHandler := func(w http.ResponseWriter, req *http.Request) {
