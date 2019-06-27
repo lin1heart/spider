@@ -3,8 +3,10 @@ import urllib2
 import sys
 import threading
 from bs4 import BeautifulSoup
+import ssl
 
 
+ssl._create_default_https_context = ssl._create_unverified_context
 #设置编码
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -20,9 +22,9 @@ def getChapterContent(file,name,content):
             threading.Timer(600, getCurrentUrlBooks(starturl + url)).start()
         else:
             file.write(data)
-    except BaseException:
+    except Exception as e:
         #如果出错了，就重新运行一遍
-        print(BaseException.message)
+        print("open exception: %s \n" %(e))
         getChapterContent(file, name, content)
     else:
         print(name)
@@ -37,7 +39,7 @@ def getCurrentUrlBooks(url):
     bookContent = soup.select("div[id='content']")[0]
     li_plants=bookContent.script
     li_plants.clear()
-    bookFile = open("所以这里是蛊真人.txt", "a+")
+    bookFile = open("所以这里是蛊真人.txt".decode('utf-8'), "a+")
     getChapterContent(bookFile, bookName, bookContent)
     bookFile.close()
     nextPage = soup.select("div[class='bottem1'] > a")[3]
