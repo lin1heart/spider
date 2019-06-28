@@ -4,13 +4,20 @@ import sys
 import threading
 from bs4 import BeautifulSoup
 import ssl
+import oss2
 
 
-ssl._create_default_https_context = ssl._create_unverified_context
 #设置编码
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    # Legacy Python that doesn't verify HTTPS certificates by default
+    pass
+else:
+    # Handle target environment that doesn't support HTTPS verification
+    ssl._create_default_https_context = _create_unverified_https_context
 
 #获取一个章节的内容
 def getChapterContent(file,name,content):
@@ -46,6 +53,11 @@ def getCurrentUrlBooks(url):
     # print nextPage['href']
     return nextPage["href"]
 
+def uploadOss():
+    auth = oss2.Auth('<yourAccessKeyId>', '<yourAccessKeySecret>')
+    bucket = oss2.Bucket(auth, 'http://oss-cn-shanghai.aliyuncs.com', 'save-play')
+    bucket.put_object_from_file('所以这里是蛊真人1.txt', '所以这里是蛊真人.txt')
+
 #根据传入参数设置从哪里开始下载
 starturl = "https://www.dingdiann.com"
 url = "/ddk182237/9683466.html"
@@ -57,4 +69,5 @@ while True:
     if url.endswith(".html"):
         url = getCurrentUrlBooks(starturl + url)
     else:
+        uploadOss()
         break;
