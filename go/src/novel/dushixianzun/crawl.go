@@ -6,7 +6,6 @@ import (
 	"github.com/lin1heart/spider/go/src/novel"
 )
 
-
 func Crawl() {
 	// Instantiate default collector
 	c := colly.NewCollector(
@@ -21,9 +20,9 @@ func Crawl() {
 		url := e.Request.URL.String()
 
 		novelRow := novel.NovelRow{
-			Title:   title,
-			Content: content,
-			CrawlUrl:	 url,
+			Title:    title,
+			Content:  content,
+			CrawlUrl: url,
 		}
 		//fmt.Println(novel)
 		//HandleNovelRow(novel)
@@ -48,8 +47,7 @@ func Crawl() {
 		fmt.Println("Finished", r.Request.URL)
 	})
 
-
-row:=novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	row := novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
 
 	fmt.Println("PrepareNovel CrawlUrl", row.CrawlUrl)
 	fmt.Println("PrepareNovel Name", row.Name)
@@ -58,6 +56,5 @@ row:=novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.ht
 
 	//err := c.Visit("https://www.qu.la/book/85467/4563618.html")
 	//util.CheckError(err)
-
 
 }
