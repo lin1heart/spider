@@ -11,6 +11,7 @@ type NovelRow struct {
 	Title    string
 	Content  string
 	CrawlUrl string
+	OssId    int
 }
 type OssRow struct {
 	Id       int
@@ -70,12 +71,38 @@ func prepareChapter(ossId int) map[int]map[string]string {
 
 func HandleNovelRow(novel NovelRow) {
 	fmt.Println("ready HandleNovelRow", novel)
-	stmt, err := mysql.Prepare(`INSERT novel (chapter_index,chapter_title, oss_id, content, url) values (?,?,?,?)`)
+	exist := checkExist(novel.CrawlUrl)
+
+	if !exist {
+		fmt.Println("ignore due to exist", novel)
+		return
+	}
+
+	novelRows := prepareChapter(novel.OssId)
+	var latestChapterIndex int = 0
+	var err error
+	if len(novelRows[0]) != 0 {
+		latestChapterIndex, err = strconv.Atoi(novelRows[0]["chapter_index"])
+	}
+
+	stmt, err := mysql.Prepare(`INSERT novel (chapter_index, chapter_title, oss_id, content, crawl_url) values (?,?,?,?,?)`)
 	util.CheckError(err)
 
-	res, err := stmt.Exec(novel)
+	res, err := stmt.Exec(latestChapterIndex+1, novel.Title, novel.OssId, novel.Content, novel.CrawlUrl)
 	util.CheckError(err)
 	id, err := res.LastInsertId()
 	util.CheckError(err)
 	fmt.Println(id)
+}
+
+func checkExist(crawUrl string) bool {
+	sqlString := fmt.Sprintf(`SELECT * FROM novel WHERE crawl_url = "%s" `, crawUrl)
+	rows, err := db.Mysql.Query(sqlString)
+	util.CheckError(err)
+
+	results, err := db.ConvertToRows(rows)
+	if len(results) == 0 {
+		return true
+	}
+	return false
 }

@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"github.com/gocolly/colly"
 	"github.com/lin1heart/spider/go/src/novel"
+	"github.com/lin1heart/spider/go/src/util"
+	"time"
 )
 
 func Crawl() {
+
+	var ossId int
 	// Instantiate default collector
 	c := colly.NewCollector(
 		// Visit only domains: hackerspaces.org, wiki.hackerspaces.org
@@ -17,17 +21,26 @@ func Crawl() {
 	c.OnHTML(".content_read", func(e *colly.HTMLElement) {
 		title := e.ChildText(".bookname h1")
 		content := e.ChildText("#content")
-		url := e.Request.URL.String()
+		nextRelativeUrl := e.ChildAttr(".bottem2  .next", "href")
+		crawlUrl := e.Request.URL.String()
+		nextAbsoluteUrl := "https://www.qu.la/book/85467/" + nextRelativeUrl
 
 		novelRow := novel.NovelRow{
 			Title:    title,
 			Content:  content,
-			CrawlUrl: url,
+			CrawlUrl: crawlUrl,
+			OssId:    ossId,
 		}
-		//fmt.Println(novel)
-		//HandleNovelRow(novel)
 		novel.HandleNovelRow(novelRow)
 
+		fmt.Println("nextAbsoluteUrl", nextAbsoluteUrl)
+		if nextRelativeUrl == "./" {
+			fmt.Println("will sleep 10 min due to latest")
+			time.Sleep(10 * time.Minute)
+		}
+		time.Sleep(30 * time.Second)
+
+		c.Visit(nextAbsoluteUrl)
 	})
 
 	// Before making a request print "Visiting ..."
@@ -52,9 +65,10 @@ func Crawl() {
 	fmt.Println("PrepareNovel CrawlUrl", row.CrawlUrl)
 	fmt.Println("PrepareNovel Name", row.Name)
 	fmt.Println("PrepareNovel Id", row.Id)
-	fmt.Println("return row ", row)
+	fmt.Println("PrepareNovel row ", row)
 
-	//err := c.Visit("https://www.qu.la/book/85467/4563618.html")
-	//util.CheckError(err)
+	ossId = row.Id
+	err := c.Visit(row.CrawlUrl)
+	util.CheckError(err)
 
 }
