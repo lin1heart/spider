@@ -15,7 +15,7 @@ func StartServer() {
 	}
 	http.HandleFunc("/hello", helloHandler)
 
-	http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Welcome to my website!")
 	})
 

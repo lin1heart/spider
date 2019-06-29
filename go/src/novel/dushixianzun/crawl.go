@@ -20,10 +20,10 @@ func Crawl() {
 		content := e.ChildText("#content")
 		url := e.Request.URL.String()
 
-		novelRow := novel.Novel{
+		novelRow := novel.NovelRow{
 			Title:   title,
 			Content: content,
-			Url:	 url,
+			CrawlUrl:	 url,
 		}
 		//fmt.Println(novel)
 		//HandleNovelRow(novel)
@@ -49,7 +49,13 @@ func Crawl() {
 	})
 
 
-	novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+row:=novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+
+	fmt.Println("PrepareNovel CrawlUrl", row.CrawlUrl)
+	fmt.Println("PrepareNovel Name", row.Name)
+	fmt.Println("PrepareNovel Id", row.Id)
+	fmt.Println("return row ", row)
+
 	//err := c.Visit("https://www.qu.la/book/85467/4563618.html")
 	//util.CheckError(err)
 

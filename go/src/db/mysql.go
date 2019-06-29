@@ -7,13 +7,9 @@ import (
 )
 import _ "github.com/go-sql-driver/mysql"
 
-
 var Mysql *sql.DB
 
-
-
-
-func init(){
+func init() {
 	defer fmt.Println("deferred")
 
 	var err error
@@ -25,8 +21,6 @@ func init(){
 	Mysql.Ping()
 
 }
-
-
 
 func PrintResult(query *sql.Rows) {
 	column, _ := query.Columns()              //读出查询出的列字段名
@@ -55,7 +49,6 @@ func PrintResult(query *sql.Rows) {
 	}
 }
 
-
 func ConvertToRows(query *sql.Rows) (map[int]map[string]string, error) {
 	column, _ := query.Columns()              //读出查询出的列字段名
 	values := make([][]byte, len(column))     //values是每个列的值，这里获取到byte里
@@ -77,10 +70,8 @@ func ConvertToRows(query *sql.Rows) (map[int]map[string]string, error) {
 		results[i] = row //装入结果集中
 		i++
 	}
-	for k, v := range results { //查询出来的数组
-		fmt.Println(k, v)
-	}
+	//for k, v := range results { //查询出来的数组
+	//	fmt.Println(k, v)
+	//}
 	return results, nil
 }
-
-
