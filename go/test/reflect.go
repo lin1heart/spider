@@ -6,16 +6,16 @@ import (
 )
 
 type User struct {
-	id int
+	id   int
 	name string
-	age int
-	tip string
+	age  int
+	tip  string
 }
 
-func main () {
+func main() {
 
-	var value interface {} = &User{1,"Tom",12,"nan"}
+	var value interface{} = &User{1, "Tom", 12, "nan"}
 	v := reflect.ValueOf(value)
-	fmt.Println("aaa",v)
+	fmt.Println("aaa", v)
 	fmt.Println("bbb", value)
 }
