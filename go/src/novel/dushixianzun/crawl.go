@@ -2,8 +2,8 @@ package dushixianzun
 
 import (
 	"fmt"
-	"github.com/amanoooo/spider/go/src/novel"
 	"github.com/gocolly/colly"
+	"github.com/lin1heart/spider/go/src/novel"
 )
 
 
@@ -48,12 +48,10 @@ func Crawl() {
 		fmt.Println("Finished", r.Request.URL)
 	})
 
-	// Start scraping on https://hackerspaces.org
-	fmt.Println("start")
-	err := c.Visit("https://www.qu.la/book/85467/4563618.html")
-	if err != nil {
-		fmt.Println("visit error ", err)
-	}
 
-	fmt.Println("finish")
+	novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	//err := c.Visit("https://www.qu.la/book/85467/4563618.html")
+	//util.CheckError(err)
+
+
 }

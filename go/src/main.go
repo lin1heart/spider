@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/amanoooo/spider/go/src/novel/dushixianzun"
-	"github.com/amanoooo/spider/go/src/util"
+	"github.com/lin1heart/spider/go/src/novel/dushixianzun"
+	"github.com/lin1heart/spider/go/src/util"
 )
 
 func main() {
