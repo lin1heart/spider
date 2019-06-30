@@ -26,6 +26,13 @@ func main() {
 		colly.UserAgent(RandomString()),
 	)
 
+	//if p, err := proxy.RoundRobinProxySwitcher(
+	//	//"socks5://127.0.0.1:1086",
+	//	"http://127.0.0.1:1087",
+	//); err == nil {
+	//	c.SetProxyFunc(colly.ProxyFunc(p))
+	//}
+
 	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String(), r.Headers)
@@ -47,8 +54,16 @@ func main() {
 	c.OnScraped(func(r *colly.Response) {
 		fmt.Println("Finished", r.Request.URL)
 	})
-
-	err := c.Visit("https://util.online/headers")
+	c.AllowURLRevisit= true
+	var err error
+	err = c.Visit("https://util.online/headers")
 	util.CheckError(err)
+	err = c.Visit("https://util.online/headers")
+	util.CheckError(err)
+	err = c.Visit("https://util.online/headers")
+	util.CheckError(err)
+	err = c.Visit("https://util.online/headers")
+	util.CheckError(err)
+
 
 }

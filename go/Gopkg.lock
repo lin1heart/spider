@@ -67,11 +67,12 @@
   version = "v0.2.3"
 
 [[projects]]
-  digest = "1:54bdbd4217a4d8b66f06422395bd6370fa20d2bf85149636d3661a1b5053c900"
+  digest = "1:c55410bdcd9f2049903a1d57baf1ffabbf2c00e8a1727814f7e4920b2dc82d6d"
   name = "github.com/gocolly/colly"
   packages = [
     ".",
     "debug",
+    "proxy",
     "storage",
   ]
   pruneopts = "UT"
@@ -174,6 +175,8 @@
   input-imports = [
     "github.com/go-sql-driver/mysql",
     "github.com/gocolly/colly",
+    "github.com/gocolly/colly/proxy",
+    "golang.org/x/net/html",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
