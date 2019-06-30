@@ -1,4 +1,4 @@
-package dushixianzun
+package la
 
 import (
 	"fmt"
@@ -10,11 +10,27 @@ import (
 )
 
 func Main() {
+	//go Gaoshoujimo() //已完结
+	go Gaoshoujimo2()
+	dushixianzun()
+}
+func Gaoshoujimo() {
 	for true {
-		Crawl()
+		Crawl("高手寂寞", "https://www.qu.la/book/2639/1459927.html")
 	}
 }
-func Crawl() {
+func Gaoshoujimo2() {
+	for true {
+		Crawl("高手寂寞2", "https://www.qu.la/book/620/410112.html")
+	}
+}
+func dushixianzun() {
+	for true {
+		Crawl("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	}
+}
+
+func Crawl(name string, crawlUrl string) {
 
 	var ossId int
 	c := colly.NewCollector(
@@ -71,7 +87,7 @@ func Crawl() {
 		fmt.Println("Finished", r.Request.URL)
 	})
 
-	row := novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	row := novel.PrepareNovel(name, crawlUrl)
 
 	fmt.Println("PrepareNovel row ", row)
 

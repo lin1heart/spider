@@ -54,7 +54,7 @@ func main() {
 	c.OnScraped(func(r *colly.Response) {
 		fmt.Println("Finished", r.Request.URL)
 	})
-	c.AllowURLRevisit= true
+	c.AllowURLRevisit = true
 	var err error
 	err = c.Visit("https://util.online/headers")
 	util.CheckError(err)
@@ -64,6 +64,5 @@ func main() {
 	util.CheckError(err)
 	err = c.Visit("https://util.online/headers")
 	util.CheckError(err)
-
 
 }
