@@ -1,4 +1,4 @@
-package dushixianzun
+package gaoshoujimo2
 
 import (
 	"fmt"
@@ -71,7 +71,7 @@ func Crawl() {
 		fmt.Println("Finished", r.Request.URL)
 	})
 
-	row := novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	row := novel.PrepareNovel("高手寂寞2", "https://www.qu.la/book/620/410112.html")
 
 	fmt.Println("PrepareNovel row ", row)
 

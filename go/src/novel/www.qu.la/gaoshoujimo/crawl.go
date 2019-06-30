@@ -5,51 +5,35 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
-	"math/rand"
 	"strings"
 	"time"
 )
-
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func RandomString() string {
-	b := make([]byte, rand.Intn(10)+10)
-	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
-	}
-	return string(b)
-}
 
 func Main() {
 	for true {
 		Crawl()
 	}
-	//Crawl()
 }
 func Crawl() {
 
 	var ossId int
-	// Instantiate default collector
 	c := colly.NewCollector(
-		// Visit only domains: hackerspaces.org, wiki.hackerspaces.org
 		colly.DisallowedDomains("https://sccdn.002lzj.com"),
-		colly.UserAgent(RandomString()),
+		colly.UserAgent(util.RandomString()),
 	)
 
-	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String(), r.Headers)
 	})
 
-	// On every a element which has href attribute call callback
 	c.OnHTML(".content_read", func(e *colly.HTMLElement) {
 		title := e.ChildText(".bookname h1")
 		content := e.ChildText("#content")
 		nextRelativeUrl := e.ChildAttr(".bottem2  .next", "href")
 		crawlUrl := e.Request.URL.String()
 
-		splitUrl:= strings.Split(e.Request.URL.String(),"/")
-		splitUrl[len(splitUrl) - 1] = nextRelativeUrl
+		splitUrl := strings.Split(e.Request.URL.String(), "/")
+		splitUrl[len(splitUrl)-1] = nextRelativeUrl
 
 		nextAbsoluteUrl := strings.Join(splitUrl, "/")
 
