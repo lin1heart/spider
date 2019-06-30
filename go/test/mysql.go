@@ -53,7 +53,5 @@ func main() {
 	checkErr(err1)
 	printResult(query)
 
-
 	fmt.Println(strconv.ParseBool(""))
 }
-

@@ -19,12 +19,11 @@ func RandomString() string {
 	return string(b)
 }
 
-
-func Main () {
+func Main() {
 	for true {
 		Crawl()
 	}
-		//Crawl()
+	//Crawl()
 }
 func Crawl() {
 
@@ -35,7 +34,6 @@ func Crawl() {
 		colly.DisallowedDomains("https://sccdn.002lzj.com"),
 		colly.UserAgent(RandomString()),
 	)
-
 
 	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
@@ -56,11 +54,11 @@ func Crawl() {
 		fmt.Println("nextAbsoluteUrl", nextAbsoluteUrl)
 
 		novelRow := novel.NovelRow{
-			Title:    title,
-			Content:  content,
-			CrawlUrl: crawlUrl,
+			Title:        title,
+			Content:      content,
+			CrawlUrl:     crawlUrl,
 			NextCrawlUrl: nextAbsoluteUrl,
-			OssId:    ossId,
+			OssId:        ossId,
 		}
 		novel.HandleNovelRow(novelRow)
 

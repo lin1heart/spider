@@ -8,11 +8,11 @@ import (
 )
 
 type NovelRow struct {
-	Title    string
-	Content  string
-	CrawlUrl string
+	Title        string
+	Content      string
+	CrawlUrl     string
 	NextCrawlUrl string
-	OssId    int
+	OssId        int
 }
 type OssRow struct {
 	Id       int
@@ -80,7 +80,6 @@ func prepareChapter(ossId int) map[int]map[string]string {
 	return results
 }
 
-
 func HandleNovelRow(novel NovelRow) {
 	fmt.Println("ready HandleNovelRow", novel)
 	exist, novelId := checkExist(novel.CrawlUrl)
@@ -108,7 +107,7 @@ func HandleNovelRow(novel NovelRow) {
 	fmt.Println(id)
 }
 
-func updateNextCrawlUrl (novelId int, nextCrawlUrl string) {
+func updateNextCrawlUrl(novelId int, nextCrawlUrl string) {
 	fmt.Println("updateNextCrawlUrl", novelId, nextCrawlUrl)
 }
 
