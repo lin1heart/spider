@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/lin1heart/spider/go/src/novel/dushixianzun"
+	"github.com/lin1heart/spider/go/src/novel/www.qu.la/dushixianzun"
+	"github.com/lin1heart/spider/go/src/novel/www.qu.la/gaoshoujimo"
 )
 
 func main() {
-	dushixianzun.Main()
-
+	go dushixianzun.Main()
+	gaoshoujimo.Main()
 }

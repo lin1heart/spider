@@ -1,4 +1,4 @@
-package dushixianzun
+package gaoshoujimo
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -46,12 +47,15 @@ func Crawl() {
 		content := e.ChildText("#content")
 		nextRelativeUrl := e.ChildAttr(".bottem2  .next", "href")
 		crawlUrl := e.Request.URL.String()
-		nextAbsoluteUrl := "https://www.qu.la/book/85467/" + nextRelativeUrl
+
+		splitUrl:= strings.Split(e.Request.URL.String(),"/")
+		splitUrl[len(splitUrl) - 1] = nextRelativeUrl
+
+		nextAbsoluteUrl := strings.Join(splitUrl, "/")
 
 		if nextRelativeUrl == "./" {
 			nextAbsoluteUrl = ""
 		}
-		fmt.Println("nextAbsoluteUrl", nextAbsoluteUrl)
 
 		novelRow := novel.NovelRow{
 			Title:        title,
@@ -83,7 +87,7 @@ func Crawl() {
 		fmt.Println("Finished", r.Request.URL)
 	})
 
-	row := novel.PrepareNovel("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	row := novel.PrepareNovel("高手寂寞", "https://www.qu.la/book/2639/1459927.html")
 
 	fmt.Println("PrepareNovel row ", row)
 
