@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"strconv"
 )
 import _ "github.com/go-sql-driver/mysql"
 
@@ -48,7 +49,11 @@ func main() {
 
 	db, err := sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider?charset=utf8")
 	checkErr(err)
-	query, err1 := db.Query("select * from oss")
+	query, err1 := db.Query("select * from novel order by id desc limit 2")
 	checkErr(err1)
 	printResult(query)
+
+
+	fmt.Println(strconv.ParseBool(""))
 }
+

@@ -11,6 +11,7 @@ type NovelRow struct {
 	Title    string
 	Content  string
 	CrawlUrl string
+	NextCrawlUrl string
 	OssId    int
 }
 type OssRow struct {
@@ -25,6 +26,11 @@ const NOVEL__TYPE = "NOVEL"
 
 var mysql = db.Mysql
 
+/*
+如果oss中还没有， 则插入oss， 返回 oss的 crawlUrl
+如果oss 已有，novel 没有， 返回 oss的 crawlUrl
+如果oss 已有，novel 已有， 返回 novel的 nextCrawlUrl, 如果nextCrawlUrl 返回 crawlUrl
+*/
 func PrepareNovel(name string, crawlUrl string) OssRow {
 	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE name = '%s' ", name)
 	rows, err := db.Mysql.Query(sqlString)
@@ -44,7 +50,12 @@ func PrepareNovel(name string, crawlUrl string) OssRow {
 		if len(novelRows) == 0 {
 			oss.CrawlUrl = ossResults[0]["crawl_url"]
 		} else {
+			nextCrawlUrl := novelRows[0]["next_crawl_url"]
+
 			oss.CrawlUrl = novelRows[0]["crawl_url"]
+			if nextCrawlUrl != "" {
+				oss.CrawlUrl = nextCrawlUrl
+			}
 		}
 		return oss
 	}
@@ -69,12 +80,14 @@ func prepareChapter(ossId int) map[int]map[string]string {
 	return results
 }
 
+
 func HandleNovelRow(novel NovelRow) {
 	fmt.Println("ready HandleNovelRow", novel)
-	exist := checkExist(novel.CrawlUrl)
+	exist, novelId := checkExist(novel.CrawlUrl)
 
-	if !exist {
+	if exist {
 		fmt.Println("ignore due to exist", novel)
+		updateNextCrawlUrl(novelId, novel.NextCrawlUrl)
 		return
 	}
 
@@ -85,24 +98,30 @@ func HandleNovelRow(novel NovelRow) {
 		latestChapterIndex, err = strconv.Atoi(novelRows[0]["chapter_index"])
 	}
 
-	stmt, err := mysql.Prepare(`INSERT novel (chapter_index, chapter_title, oss_id, content, crawl_url) values (?,?,?,?,?)`)
+	stmt, err := mysql.Prepare(`INSERT novel (chapter_index, chapter_title, oss_id, content, crawl_url, next_crawl_url) values (?,?,?,?,?,?)`)
 	util.CheckError(err)
 
-	res, err := stmt.Exec(latestChapterIndex+1, novel.Title, novel.OssId, novel.Content, novel.CrawlUrl)
+	res, err := stmt.Exec(latestChapterIndex+1, novel.Title, novel.OssId, novel.Content, novel.CrawlUrl, novel.NextCrawlUrl)
 	util.CheckError(err)
 	id, err := res.LastInsertId()
 	util.CheckError(err)
 	fmt.Println(id)
 }
 
-func checkExist(crawUrl string) bool {
+func updateNextCrawlUrl (novelId int, nextCrawlUrl string) {
+	fmt.Println("updateNextCrawlUrl", novelId, nextCrawlUrl)
+}
+
+func checkExist(crawUrl string) (bool, int) {
 	sqlString := fmt.Sprintf(`SELECT * FROM novel WHERE crawl_url = "%s" `, crawUrl)
 	rows, err := db.Mysql.Query(sqlString)
 	util.CheckError(err)
 
 	results, err := db.ConvertToRows(rows)
-	if len(results) == 0 {
-		return true
+	if len(results) != 0 {
+		id, err := strconv.Atoi(results[0]["id"])
+		util.CheckError(err)
+		return true, id
 	}
-	return false
+	return false, -1
 }

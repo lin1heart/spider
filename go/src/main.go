@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	dushixianzun.Crawl()
+	dushixianzun.Main()
 
 }
