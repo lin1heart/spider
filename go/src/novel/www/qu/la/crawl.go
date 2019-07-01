@@ -10,16 +10,18 @@ import (
 )
 
 func Main() {
-	//go Gaoshoujimo() //已完结
-	go Gaoshoujimo2()
+	//go gaoshoujimo() // 已完结
+	//go gaoshoujimo2() // 已完结
+	//go chongshengzhiwonengshengji() // 已完结
+	go nitianxieshen()
 	dushixianzun()
 }
-func Gaoshoujimo() {
+func gaoshoujimo() {
 	for true {
 		Crawl("高手寂寞", "https://www.qu.la/book/2639/1459927.html")
 	}
 }
-func Gaoshoujimo2() {
+func gaoshoujimo2() {
 	for true {
 		Crawl("高手寂寞2", "https://www.qu.la/book/620/410112.html")
 	}
@@ -27,6 +29,16 @@ func Gaoshoujimo2() {
 func dushixianzun() {
 	for true {
 		Crawl("都市仙尊", "https://www.qu.la/book/85467/4563618.html")
+	}
+}
+func nitianxieshen() {
+	for true {
+		Crawl("逆天邪神", "https://www.qu.la/book/3648/10567026.html")
+	}
+}
+func chongshengzhiwonengshengji() {
+	for true {
+		Crawl("重生之我能升级", "https://www.qu.la/book/182726/9302392.html")
 	}
 }
 
@@ -66,9 +78,11 @@ func Crawl(name string, crawlUrl string) {
 		}
 		novel.HandleNovelRow(novelRow)
 
-		if nextRelativeUrl == "./" {
-			nextAbsoluteUrl = ""
-			fmt.Println("will sleep 10 min due to latest")
+		fmt.Printf("%s nextRelativeUrl %s nextAbsoluteUrl %s \n", name, nextRelativeUrl, nextAbsoluteUrl)
+
+
+		if nextAbsoluteUrl == "" {
+			fmt.Printf("%s will sleep 10 min due to latest \n", name)
 			time.Sleep(10 * time.Minute)
 		} else {
 			time.Sleep(5 * time.Second)

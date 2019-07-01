@@ -18,4 +18,10 @@ func main() {
 	newStr := strings.Join(splitStr, "/")
 	fmt.Println("newStr", newStr)
 
+	fmt.Sprint(" this is %v ", "123")
+	     var name interface{} = "yinzhengjie"
+	     fmt.Printf("My name is %v !\n", name)
+	     var age  interface{} = 18
+	     fmt.Printf("I am [%d] years old。",age)
+
 }

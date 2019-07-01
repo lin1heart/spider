@@ -108,7 +108,16 @@ func HandleNovelRow(novel NovelRow) {
 }
 
 func updateNextCrawlUrl(novelId int, nextCrawlUrl string) {
-	fmt.Println("updateNextCrawlUrl", novelId, nextCrawlUrl)
+	if nextCrawlUrl == "" {
+		return
+	}
+	stmt, err := mysql.Prepare(`UPDATE novel SET next_crawl_url=? WHERE id=?`)
+	util.CheckError(err)
+	res, err := stmt.Exec(nextCrawlUrl, novelId)
+	util.CheckError(err)
+	num, err := res.RowsAffected()
+	fmt.Printf("updateNextCrawlUrl id %d affect row %d", num)
+	util.CheckError(err)
 }
 
 func checkExist(crawUrl string) (bool, int) {
