@@ -29,10 +29,10 @@ var mysql = db.Mysql
 /*
 如果oss中还没有， 则插入oss， 返回 oss的 crawlUrl
 如果oss 已有，novel 没有， 返回 oss的 crawlUrl
-如果oss 已有，novel 已有， 返回 novel的 nextCrawlUrl, 如果nextCrawlUrl 返回 crawlUrl
+如果oss 已有，novel 已有， 返回 novel的 nextCrawlUrl, 如果nextCrawlUrl 为空 返回 crawlUrl
 */
 func PrepareNovel(name string, crawlUrl string) OssRow {
-	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE name = '%s' ", name)
+	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE name = '%s' AND crawl_url = '%s' ", name, crawlUrl)
 	rows, err := db.Mysql.Query(sqlString)
 	util.CheckError(err)
 
