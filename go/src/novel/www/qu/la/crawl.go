@@ -6,6 +6,7 @@ import (
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -41,16 +42,19 @@ func Crawl(name string, crawlUrl string) {
 			nextAbsoluteUrl = ""
 		}
 
+		var re = regexp.MustCompile(`\s\schaptererror\(\);`)
+		cleanContent := re.ReplaceAllString(content, ``)
+
 		novelRow := novel.NovelRow{
 			Title:        title,
-			Content:      content,
+			Content:      cleanContent,
 			CrawlUrl:     crawlUrl,
 			NextCrawlUrl: nextAbsoluteUrl,
 			OssId:        ossId,
 		}
 		novel.HandleNovelRow(novelRow)
 
-		fmt.Printf("%s nextRelativeUrl %s nextAbsoluteUrl %s \n", name, nextRelativeUrl, nextAbsoluteUrl)
+		//fmt.Printf("%s nextRelativeUrl %s nextAbsoluteUrl %s \n", name, nextRelativeUrl, nextAbsoluteUrl)
 
 		if nextAbsoluteUrl == "" {
 			fmt.Printf("%s will sleep 10 min due to latest \n", name)

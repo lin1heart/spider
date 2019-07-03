@@ -5,6 +5,7 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/lin1heart/spider/go/src/util"
 	"math/rand"
+	"regexp"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -40,6 +41,11 @@ func main() {
 
 	// On every a element which has href attribute call callback
 	c.OnHTML(".content_read", func(e *colly.HTMLElement) {
+		content := e.ChildText("#content")
+
+		var re = regexp.MustCompile(`\s\schaptererror\(\);`)
+		s := re.ReplaceAllString(content, ``)
+		fmt.Println("content", content, s)
 
 	})
 
@@ -56,13 +62,7 @@ func main() {
 	})
 	c.AllowURLRevisit = true
 	var err error
-	err = c.Visit("https://util.online/headers")
-	util.CheckError(err)
-	err = c.Visit("https://util.online/headers")
-	util.CheckError(err)
-	err = c.Visit("https://util.online/headers")
-	util.CheckError(err)
-	err = c.Visit("https://util.online/headers")
+	err = c.Visit("https://www.qu.la/book/85467/4563618.htmls")
 	util.CheckError(err)
 
 }
