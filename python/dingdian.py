@@ -25,7 +25,7 @@ logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler("spider_error.log")
 fh.setLevel(logging.ERROR)
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s : %(message)s")
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
@@ -50,7 +50,7 @@ def spiderContent(url,id):
         li_plants = bookContent.script
         if li_plants:
             li_plants.clear()
-        data = str(bookContent).replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").strip()
+        data = str(bookContent).replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").replace('\'', '\\\'').strip()
         checkdata = "正在手打中，请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！"
         if data == checkdata and nextPage.endswith(".html"):
             logger.info("本章节无内容")
@@ -80,23 +80,21 @@ def spiderM(url, id):
     count = 0
     hreflist = []
     textlist = []
-    if length > 15:
+    if length > 20:
         for a in books:
-            if count > 15:
+            if count > 20:
                 break
             count += 1
-            hreflist.append(a["href"].split('/')[2])
+            hreflist.append(int(a["href"].split('/')[2].split('.')[0]))
             textlist.append(a.text)
     else:
         for a in books:
-            hreflist.append(a["href"].split('/')[2])
+            hreflist.append(int(a["href"].split('/')[2].split('.')[0]))
             textlist.append(a.text)
 
     min_index, min_number = min(enumerate(hreflist), key=operator.itemgetter(1))
-    logger.info(url+min_number)
-    logger.info(textlist[min_index])
-    updateF(url+min_number, id)
-    spiderContent(url+min_number, id)
+    updateF(url+str(min_number)+".html", id)
+    spiderContent(url+str(min_number)+".html", id)
 
 
 #通过网站搜索功能 先搜索小说，再爬取
