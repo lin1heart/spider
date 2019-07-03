@@ -4,6 +4,8 @@ import ssl
 import string
 import urllib2
 import pymysql
+import logging
+import operator
 import threading
 from bs4 import BeautifulSoup
 
@@ -17,6 +19,18 @@ except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
+#log
+logger = logging.getLogger("dingdian_spider")
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler("spider_error.log")
+fh.setLevel(logging.ERROR)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s : %(message)s")
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 #根据传入参数设置从哪里开始下载
 starturl = "https://www.dingdiann.com"
@@ -26,48 +40,76 @@ db = pymysql.connect("39.104.226.149", "root", "root", "spider", charset='utf8')
 
 #获取章节内容
 def spiderContent(url,id):
+    try:
+        response = urllib2.urlopen(url)
+        the_page = response.read()
+        soup = BeautifulSoup(the_page, "html.parser")
+        bookName = soup.select("div[class='bookname'] > h1")[0].text
+        bookContent = soup.select("div[id='content']")[0]
+        nextPage = soup.select("div[class='bottem1'] > a")[3]["href"]
+        li_plants = bookContent.script
+        if li_plants:
+            li_plants.clear()
+        data = str(bookContent).replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").strip()
+        checkdata = "正在手打中，请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！"
+        if data == checkdata and nextPage.endswith(".html"):
+            logger.info("本章节无内容")
+            insert("",id,bookName,url,starturl+nextPage)
+        elif data != checkdata and not nextPage.endswith(".html"):
+            logger.info("最新章 "+bookName)
+            insert(data,id,bookName,url,"")
+        elif data != checkdata and nextPage.endswith(".html"):
+            logger.debug("正常章节 "+bookName)
+            insert(data,id,bookName,url,starturl+nextPage)
+        else:
+            logger.info("本章节未更新或者获取章节异常 "+bookName)
+            return
+    except Exception, e:
+        logger.error(e)
+
+
+
+
+#从目录爬取小说,获取第一章
+def spiderM(url, id):
     response = urllib2.urlopen(url)
     the_page = response.read()
     soup = BeautifulSoup(the_page, "html.parser")
-    bookName = soup.select("div[class='bookname'] > h1")[0].text
-    bookContent = soup.select("div[id='content']")[0]
-    nextPage = soup.select("div[class='bottem1'] > a")[3]["href"]
-    li_plants = bookContent.script
-    li_plants.clear()
-    data = str(bookContent).replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").strip()
-    if data == "正在手打中，请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！":
-        return
-    elif not nextPage.endswith(".html"):
-        print "最新章"
-        return
+    books = soup.select("dd > a")
+    length = len(books)
+    count = 0
+    hreflist = []
+    textlist = []
+    if length > 15:
+        for a in books:
+            if count > 15:
+                break
+            count += 1
+            hreflist.append(a["href"].split('/')[2])
+            textlist.append(a.text)
     else:
-        insert(data,id,bookName,url,starturl+nextPage)
-        # timer = threading.Timer(1.5, spiderContent(starturl+nextPage,id))
-        # timer.start()
+        for a in books:
+            hreflist.append(a["href"].split('/')[2])
+            textlist.append(a.text)
 
+    min_index, min_number = min(enumerate(hreflist), key=operator.itemgetter(1))
+    logger.info(url+min_number)
+    logger.info(textlist[min_index])
+    updateF(url+min_number, id)
+    spiderContent(url+min_number, id)
 
-
-#从目录爬取小说
-def spiderM(url):
-    response = urllib2.urlopen(url)
-    the_page = response.read()
-    soup = BeautifulSoup(the_page, "html.parser")
-    # print soup
-    # book = soup.select("div[id='list']")
-    book = soup.select("dd > a")
-    books = soup.select("dd > a")[0].text
-    print book
 
 #通过网站搜索功能 先搜索小说，再爬取
-def searchNovel(name):
+def searchNovel(name, id):
     response = urllib2.urlopen(searchurl+urllib2.quote(str(name)))
     the_page = response.read()
     soup = BeautifulSoup(the_page, "html.parser")
     book = soup.select("span[class='s2'] > a")
     if not book:
         return
-    if book[0].text == name:
-        spiderM(starturl + book[0]["href"])
+    for boo in book:
+        if boo.text == name:
+            spiderM(starturl + boo["href"], id)
 
 
 
@@ -81,7 +123,6 @@ def spiderStart(data):
             continue
         if curl and string.find(curl, starturl) != -1:
             nurl = search(ossId)
-            print (nurl)
             if nurl:
                 spiderContent(nurl, ossId)
             else:
@@ -89,7 +130,7 @@ def spiderStart(data):
         elif curl:
             continue
         else:
-            searchNovel(name)
+            searchNovel(name, ossId)
 
 def search(id):
     scursor = db.cursor()
@@ -104,7 +145,6 @@ def search(id):
 
 
 def insert(data,id,name,url,next):
-    print id,name,url,next
     icursor = db.cursor()
     sqlInsert = "INSERT INTO novel(chapter_index,chapter_title,oss_id,content,crawl_url,next_crawl_url)VALUES ('%d','%s','%d','%s','%s','%s')"
     icursor.execute("SELECT chapter_index,chapter_title,next_crawl_url FROM novel WHERE oss_id=%d ORDER BY chapter_index DESC LIMIT 1" %(id))
@@ -122,18 +162,22 @@ def insert(data,id,name,url,next):
         icursor.execute("UPDATE novel SET next_crawl_url='%s' WHERE oss_id=%d AND chapter_index=%d" %(next, id, c_index))
         db.commit()
 
+def updateF(curl,id):
+    ucursor = db.cursor()
+    ucursor.execute("UPDATE oss SET crawl_url='%s' WHERE id=%d" %(curl,id))
+    db.commit()
 
 def select():
-    cursor = db.cursor()
-    cursor.execute("SELECT id,name,crawl_url,url FROM oss WHERE type='NOVEL' AND complete=FALSE ")
-    data = cursor.fetchall()
+    ocursor = db.cursor()
+    ocursor.execute("SELECT id,name,crawl_url,url FROM oss WHERE type='NOVEL' AND complete=FALSE")
+    data = ocursor.fetchall()
     return data
 
 def main():
-
     list = select()
     spiderStart(list)
-    db.close()
+    # db.close()
+    threading.Timer(1.5, main).start()
 
 if __name__ == '__main__':
     main()
