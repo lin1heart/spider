@@ -23,7 +23,7 @@ else:
 logger = logging.getLogger("dingdian_spider")
 logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler("spider_error.log")
-fh.setLevel(logging.ERROR)
+fh.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s : %(message)s")
@@ -41,7 +41,7 @@ db = pymysql.connect("39.104.226.149", "root", "root", "spider", charset='utf8')
 #获取章节内容
 def spiderContent(url,id):
     try:
-        response = urllib2.urlopen(url)
+        response = urllib2.urlopen(url, timeout=60)
         the_page = response.read()
         soup = BeautifulSoup(the_page, "html.parser")
         bookName = soup.select("div[class='bookname'] > h1")[0].text
