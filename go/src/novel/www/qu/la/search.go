@@ -1,23 +1,27 @@
-package main
+package la
 
 import (
 	"crypto/tls"
 	"fmt"
 	"github.com/gocolly/colly"
+	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/util"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
-var SEARCH_URL ="https://sou.xanbhx.com/search?siteid=qula&q="
+var SEARCH_URL = "https://sou.xanbhx.com/search?siteid=qula&q="
 
-func crawlSearchResult(name string) {
+var mysql = db.Mysql
 
-	//var ossId int
+func crawlNovelChapters(id int, basehref string) {
+
 	var counter = 0
 	var minHtmlIndex = 99999999999
+	var htmlhref = ""
 
 	c := colly.NewCollector(
 		colly.DisallowedDomains("https://sccdn.002lzj.com"),
@@ -32,64 +36,108 @@ func crawlSearchResult(name string) {
 	})
 
 	c.OnHTML("#list dd a", func(e *colly.HTMLElement) {
-
-		text := strings.TrimSpace(e.Text)
-		href := e.Attr("href")
-		splitsArr := strings.Split(href,".html")
-		htmlIndexStr := splitsArr[0]
-		htmlIndex, err := strconv.Atoi(htmlIndexStr)
-		util.CheckError(err)
-
 		counter += 1
-		if htmlIndex < minHtmlIndex {
-			minHtmlIndex = htmlIndex
-		}
-		if counter == 20 {
-			fmt.Println("list text ",text)
-			fmt.Println("list href ",href)
-		}
-		fmt.Println("counter", counter)
-	})
 
-
-	c.OnHTML("#search-main .search-list li .s2 a", func(e *colly.HTMLElement) {
-		text := strings.TrimSpace( e.Text)
 		href := e.Attr("href")
+		splitsArr := strings.Split(href, "/")
 
-		if name == text {
-			fmt.Println("search text ", text)
-			fmt.Println("search href ", href)
-			c.Visit(href)
+		//text := strings.TrimSpace(e.Text)
+		//fmt.Println("list text ", text)
+		//fmt.Println("list href ", href)
+
+		if len(splitsArr) == 4 {
+			htmlIndexStr := splitsArr[3]
+
+			splits2 := strings.Split(htmlIndexStr, ".html")
+			htmlIndex, err := strconv.Atoi(splits2[0])
+			if err == nil {
+				if htmlIndex < minHtmlIndex {
+					minHtmlIndex = htmlIndex
+					htmlhref = href
+				}
+			} else {
+				fmt.Print(err)
+			}
 		}
-
-
-		//novelRow := novel.NovelRow{
-		//	Title:        title,
-		//	Content:      cleanContent,
-		//	CrawlUrl:     crawlUrl,
-		//	NextCrawlUrl: nextAbsoluteUrl,
-		//	OssId:        ossId,
-		//}
-		//novel.HandleNovelRow(novelRow)
 	})
 	c.OnResponse(func(r *colly.Response) {
 		fmt.Println("Visited", r.Request.URL, r.StatusCode)
 	})
 
+	c.OnScraped(func(r *colly.Response) {
+
+		updateOssCrawlUrl(basehref+htmlhref, id)
+
+	})
+	c.OnError(func(_ *colly.Response, err error) {
+		fmt.Println("Something went wrong:", err)
+	})
+	err := c.Visit(basehref)
+	util.CheckError(err)
+
+}
+
+func crawlSearchResult(name string, id int) {
+
+	c := colly.NewCollector(
+		colly.DisallowedDomains("https://sccdn.002lzj.com"),
+		colly.UserAgent(util.RandomString()),
+	)
+	c.WithTransport(&http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	})
+
+	c.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting", r.URL.String(), r.Headers)
+	})
+
+	c.OnHTML("#search-main .search-list li .s2 a", func(e *colly.HTMLElement) {
+		text := strings.TrimSpace(e.Text)
+		href := e.Attr("href")
+
+		if name == text {
+			fmt.Println("search text ", text)
+			fmt.Println("search href ", href)
+			crawlNovelChapters(id, href)
+		}
+	})
 	c.OnError(func(_ *colly.Response, err error) {
 		fmt.Println("Something went wrong:", err)
 	})
 
 	escapedTitle := url.QueryEscape(name)
-	fmt.Println("escapedTitle", escapedTitle)
-	fmt.Println("2", SEARCH_URL + escapedTitle)
 	err := c.Visit(SEARCH_URL + escapedTitle)
 	util.CheckError(err)
 
 }
-
-func main() {
-	crawlSearchResult("遮天")
+func updateOssCrawlUrl(crawlUrl string, novelId int) {
+	stmt, err := mysql.Prepare(`UPDATE oss SET crawl_url=? WHERE id=?`)
+	util.CheckError(err)
+	res, err := stmt.Exec(crawlUrl, novelId)
+	util.CheckError(err)
+	num, err := res.RowsAffected()
+	fmt.Printf("updateNextCrawlUrl id %d affect row %d", num)
+	util.CheckError(err)
 }
 
+func queryNullCrawlUrlOss() {
+	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE (crawl_url IS NULL or crawl_url = '') AND type ='NOVEL' ")
+	rows, err := mysql.Query(sqlString)
 
+	ossResults, err := db.ConvertToRows(rows)
+	util.CheckError(err)
+
+	for _, ossRow := range ossResults {
+		id, err := strconv.Atoi(ossRow["id"])
+		util.CheckError(err)
+		name := ossRow["name"]
+		crawlSearchResult(name, id)
+	}
+}
+func LoopQueryNullCrawlUrlOss() {
+	for true {
+		queryNullCrawlUrlOss()
+		time.Sleep(10 * time.Second)
+
+	}
+}

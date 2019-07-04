@@ -24,4 +24,11 @@ func main() {
 	var age interface{} = 18
 	fmt.Printf("I am [%d] years old。", age)
 
+	test()
+}
+
+func test() {
+	a := "123.html"
+	b := "book/"
+
 }
