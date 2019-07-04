@@ -122,9 +122,11 @@ func queryTodoOss() {
 	}
 }
 
+
 func Main() {
 	for true {
 		queryTodoOss()
+		//crawlSearchResult()
 		time.Sleep(5 * time.Second)
 	}
 }
