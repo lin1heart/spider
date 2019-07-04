@@ -48,9 +48,10 @@ def spiderContent(url,id):
         bookContent = soup.select("div[id='content']")[0]
         nextPage = soup.select("div[class='bottem1'] > a")[3]["href"]
         li_plants = bookContent.script
+        print bookContent
         if li_plants:
             li_plants.clear()
-        data = str(bookContent).replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").replace('\'', '\\\'').strip()
+        data = str(bookContent).replace("\\","").replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").replace('\'', '\\\'').strip()
         checkdata = "正在手打中，请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！"
         if data == checkdata and nextPage.endswith(".html"):
             logger.info("本章节无内容")
@@ -66,6 +67,7 @@ def spiderContent(url,id):
             return
     except Exception, e:
         logger.error(e)
+        logger.error(data)
 
 
 
