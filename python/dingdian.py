@@ -66,6 +66,7 @@ def spiderContent(url,id, name):
             return
     except Exception, e:
         logger.error(e)
+        logger.error(name)
         logger.error(data)
 
 
