@@ -13,7 +13,7 @@ func init() {
 	defer fmt.Println("deferred")
 
 	var err error
-	Mysql, err = sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider_test?charset=utf8")
+	Mysql, err = sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider?charset=utf8")
 	util.CheckError(err)
 
 	Mysql.SetMaxOpenConns(20)

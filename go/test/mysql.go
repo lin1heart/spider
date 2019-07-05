@@ -12,8 +12,9 @@ import (
 
 func checkErr(errMasg error) {
 	if errMasg != nil {
-		fmt.Println("error %s", errMasg)
-		panic(errMasg)
+		//fmt.Println("error %s", errMasg)
+		//panic(errMasg)
+		//log.Fatal(errMasg)
 	}
 }
 

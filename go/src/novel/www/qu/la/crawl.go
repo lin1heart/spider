@@ -92,13 +92,13 @@ func loopCrawl(name string, crawlUrl string) {
 	}
 }
 
-func generateSqlSuffix(crawlingIds []string) string {
-	crawlingIdsStr := strings.Join(crawlingIds, ",")
+func generateSqlSuffix(ids []string) string {
+	idsStr := strings.Join(ids, ",")
 
-	if crawlingIdsStr == "" {
+	if idsStr == "" {
 		return ""
 	}
-	sqlSuffix := fmt.Sprintf(" AND id NOT IN ( %s )", crawlingIdsStr)
+	sqlSuffix := fmt.Sprintf(" AND id NOT IN ( %s )", idsStr)
 	return sqlSuffix
 }
 
@@ -126,6 +126,6 @@ func Main() {
 	go LoopQueryNullCrawlUrlOss()
 	for true {
 		queryTodoOss()
-		time.Sleep(5 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }

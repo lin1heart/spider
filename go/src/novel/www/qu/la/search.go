@@ -16,6 +16,7 @@ import (
 var SEARCH_URL = "https://sou.xanbhx.com/search?siteid=qula&q="
 
 var mysql = db.Mysql
+var searchedIds []string
 
 func crawlNovelChapters(id int, basehref string) {
 
@@ -121,7 +122,7 @@ func updateOssCrawlUrl(crawlUrl string, novelId int) {
 }
 
 func queryNullCrawlUrlOss() {
-	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE (crawl_url IS NULL or crawl_url = '') AND type ='NOVEL' ")
+	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE (crawl_url IS NULL or crawl_url = '') AND type ='NOVEL' %s ", generateSqlSuffix(searchedIds))
 	rows, err := mysql.Query(sqlString)
 
 	ossResults, err := db.ConvertToRows(rows)
@@ -132,6 +133,9 @@ func queryNullCrawlUrlOss() {
 		util.CheckError(err)
 		name := ossRow["name"]
 		crawlSearchResult(name, id)
+		searchedIds = append(searchedIds, ossRow["id"])
+		fmt.Printf("add ossId %v to searchedIds \n", id)
+
 	}
 }
 func LoopQueryNullCrawlUrlOss() {
