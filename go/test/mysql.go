@@ -46,7 +46,6 @@ func printResult(query *sql.Rows) {
 }
 
 func main() {
-	defer fmt.Println("deferred")
 
 	db, err := sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider?charset=utf8")
 	checkErr(err)

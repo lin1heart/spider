@@ -45,6 +45,10 @@ func main() {
 
 		var re = regexp.MustCompile(`\s\schaptererror\(\);`)
 		s := re.ReplaceAllString(content, ``)
+
+		match, _ := regexp.MatchString("^正在手打中，客官请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！", content)
+		fmt.Println("match", match)
+
 		fmt.Println("content", content, s)
 
 	})
@@ -62,7 +66,7 @@ func main() {
 	})
 	c.AllowURLRevisit = true
 	var err error
-	err = c.Visit("https://www.qu.la/book/85467/4563618.htmls")
+	err = c.Visit("https://www.qu.la/book/61524/3705180.html")
 	util.CheckError(err)
 
 }

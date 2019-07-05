@@ -6,6 +6,7 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/util"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -19,6 +20,13 @@ var mysql = db.Mysql
 var searchedIds []string
 
 func crawlNovelChapters(id int, basehref string) {
+
+	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
+		if err := recover(); err != nil {
+			log.Printf("crawlNovelChapters defer e", err) // 这里的err其实就是panic传入的内容，55
+		}
+	}()
+
 
 	var counter = 0
 	var minHtmlIndex = 99999999999
@@ -108,7 +116,9 @@ func crawlSearchResult(name string, id int) {
 
 	escapedTitle := url.QueryEscape(name)
 	err := c.Visit(SEARCH_URL + escapedTitle)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Visit %s e ", SEARCH_URL + escapedTitle, err)
+	}
 
 }
 func updateOssCrawlUrl(crawlUrl string, novelId int) {
@@ -135,11 +145,11 @@ func queryNullCrawlUrlOss() {
 		crawlSearchResult(name, id)
 		searchedIds = append(searchedIds, ossRow["id"])
 		fmt.Printf("add ossId %v to searchedIds \n", id)
-
 	}
 }
 func LoopQueryNullCrawlUrlOss() {
 	for true {
+
 		queryNullCrawlUrlOss()
 		time.Sleep(10 * time.Second)
 

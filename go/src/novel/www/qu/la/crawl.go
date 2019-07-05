@@ -6,6 +6,7 @@ import (
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
+	"log"
 	"regexp"
 	"strings"
 	"time"
@@ -16,6 +17,11 @@ const WWW_QU_LA_PREFIX = "https://www.qu.la/%"
 var crawlingIds []string
 
 func Crawl(name string, crawlUrl string) {
+	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
+		if err := recover(); err != nil {
+			log.Printf("Crawl defer e", err) // 这里的err其实就是panic传入的内容，55
+		}
+	}()
 
 	var ossId int
 	c := colly.NewCollector(
@@ -44,6 +50,14 @@ func Crawl(name string, crawlUrl string) {
 
 		var re = regexp.MustCompile(`\s\schaptererror\(\);`)
 		cleanContent := re.ReplaceAllString(content, ``)
+
+		match, _ := regexp.MatchString("^正在手打中，客官请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！", content)
+
+		if match == true && nextAbsoluteUrl == "" {
+			fmt.Printf("%s will sleep 10 min due to invalid content \n", name, content)
+			time.Sleep(10 * time.Minute)
+			return
+		}
 
 		novelRow := novel.NovelRow{
 			Title:        title,
@@ -82,7 +96,10 @@ func Crawl(name string, crawlUrl string) {
 
 	ossId = row.Id
 	err := c.Visit(row.CrawlUrl)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Visit %s e ", row.CrawlUrl, err)
+	}
+
 
 }
 
