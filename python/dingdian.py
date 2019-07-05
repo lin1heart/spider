@@ -39,7 +39,7 @@ db = pymysql.connect("39.104.226.149", "root", "root", "spider", charset='utf8')
 
 
 #获取章节内容
-def spiderContent(url,id):
+def spiderContent(url,id, name):
     try:
         response = urllib2.urlopen(url, timeout=60)
         the_page = response.read()
@@ -48,22 +48,21 @@ def spiderContent(url,id):
         bookContent = soup.select("div[id='content']")[0]
         nextPage = soup.select("div[class='bottem1'] > a")[3]["href"]
         li_plants = bookContent.script
-        print bookContent
         if li_plants:
             li_plants.clear()
         data = str(bookContent).replace("\\","").replace("<br/><br/>", "\n").replace('<script></script>', "").replace('</div>', "").replace('<div id="content">', "").replace('\'', '\\\'').strip()
         checkdata = "正在手打中，请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！"
         if data == checkdata and nextPage.endswith(".html"):
-            logger.info("本章节无内容")
+            logger.info("本章节无内容 | " + name)
             insert("",id,bookName,url,starturl+nextPage)
-        elif data != checkdata and not nextPage.endswith(".html"):
-            logger.info("最新章 "+bookName)
+        elif data != checkdata and "" != data and not nextPage.endswith(".html"):
+            logger.info("最新章 "+bookName + " | " + name)
             insert(data,id,bookName,url,"")
         elif data != checkdata and nextPage.endswith(".html"):
-            logger.debug("正常章节 "+bookName)
+            logger.debug("正常章节 "+bookName + " | " + name)
             insert(data,id,bookName,url,starturl+nextPage)
         else:
-            logger.info("本章节未更新或者获取章节异常 "+bookName)
+            logger.info("本章节未更新或者获取章节异常 "+bookName +" | "+ name)
             return
     except Exception, e:
         logger.error(e)
@@ -73,7 +72,7 @@ def spiderContent(url,id):
 
 
 #从目录爬取小说,获取第一章
-def spiderM(url, id):
+def spiderM(url, id, name):
     response = urllib2.urlopen(url)
     the_page = response.read()
     soup = BeautifulSoup(the_page, "html.parser")
@@ -96,7 +95,7 @@ def spiderM(url, id):
 
     min_index, min_number = min(enumerate(hreflist), key=operator.itemgetter(1))
     updateF(url+str(min_number)+".html", id)
-    spiderContent(url+str(min_number)+".html", id)
+    spiderContent(url+str(min_number)+".html", id, name)
 
 
 #通过网站搜索功能 先搜索小说，再爬取
@@ -109,7 +108,7 @@ def searchNovel(name, id):
         return
     for boo in book:
         if boo.text == name:
-            spiderM(starturl + boo["href"], id)
+            spiderM(starturl + boo["href"], id, name)
 
 
 
@@ -124,9 +123,9 @@ def spiderStart(data):
         if curl and string.find(curl, starturl) != -1:
             nurl = search(ossId)
             if nurl:
-                spiderContent(nurl, ossId)
+                spiderContent(nurl, ossId, name)
             else:
-                spiderContent(curl, ossId)
+                spiderContent(curl, ossId, name)
         elif curl:
             continue
         else:
