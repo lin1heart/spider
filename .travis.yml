@@ -1,0 +1,23 @@
+language: go
+
+
+env:
+  - DEP_VERSION=0.5.0
+
+services:
+  - docker
+
+# before_install:                                                                 
+#   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
+
+go:
+  - 1.12.x
+
+script:
+- echo $GOPATH
+- pwd
+- CGO_ENABLED=0 go build -o spider ./go/src
+- docker build -f go/Dockerfile -t amanohikaru/spider .
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- docker push amanohikaru/spider
+
