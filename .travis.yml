@@ -22,4 +22,7 @@ script:
 - echo $GOPATH
 - pwd
 - go build -o spider ./go/src
+- docker build -f go/Dockerfile -t amanohikaru/spider .
+- docker login -u $DOCKER_NAME -p $DOCKER_PASS
+- docker push amanohikaru/spider
 
