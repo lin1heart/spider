@@ -13,16 +13,11 @@ services:
 go:
   - 1.12.x
 
-ignore:
-  - python/*
-  - test/*
-
 script:
-- go version
 - echo $GOPATH
 - pwd
-- CGO_ENABLED=0 go build -tags netgo -a -v -o spider ./go/src
+- CGO_ENABLED=0 go build -o spider ./go/src
 - docker build -f go/Dockerfile -t amanohikaru/spider .
-- docker login -u amanohikaru -p cao12345
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker push amanohikaru/spider
 
