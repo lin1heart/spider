@@ -1,4 +1,4 @@
-package test
+package crwal
 
 import (
 	"fmt"

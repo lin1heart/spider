@@ -1,4 +1,4 @@
-package test
+package reflect
 
 import (
 	"fmt"
