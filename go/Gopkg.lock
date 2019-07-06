@@ -67,12 +67,11 @@
   version = "v0.2.3"
 
 [[projects]]
-  digest = "1:c55410bdcd9f2049903a1d57baf1ffabbf2c00e8a1727814f7e4920b2dc82d6d"
+  digest = "1:54bdbd4217a4d8b66f06422395bd6370fa20d2bf85149636d3661a1b5053c900"
   name = "github.com/gocolly/colly"
   packages = [
     ".",
     "debug",
-    "proxy",
     "storage",
   ]
   pruneopts = "UT"
@@ -94,6 +93,19 @@
   pruneopts = "UT"
   revision = "06ec0d0dbcd497d01e5189b16f5263f712e61a8e"
   version = "v1.2.4"
+
+[[projects]]
+  branch = "master"
+  digest = "1:86e4c340b0ab0a814f3e3d2c28b693f286f5e1e0178f25288efeb55768086fad"
+  name = "github.com/lin1heart/spider"
+  packages = [
+    "go/src/db",
+    "go/src/novel",
+    "go/src/novel/www/qu/la",
+    "go/src/util",
+  ]
+  pruneopts = "UT"
+  revision = "d2ec4d8cd5a5afbbebe8dd995d90d5bb661e0a6a"
 
 [[projects]]
   branch = "master"
@@ -175,7 +187,10 @@
   input-imports = [
     "github.com/go-sql-driver/mysql",
     "github.com/gocolly/colly",
-    "github.com/gocolly/colly/proxy",
+    "github.com/lin1heart/spider/go/src/db",
+    "github.com/lin1heart/spider/go/src/novel",
+    "github.com/lin1heart/spider/go/src/novel/www/qu/la",
+    "github.com/lin1heart/spider/go/src/util",
     "golang.org/x/net/html",
   ]
   solver-name = "gps-cdcl"

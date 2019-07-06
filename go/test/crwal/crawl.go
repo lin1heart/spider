@@ -1,4 +1,4 @@
-package crwal
+package crawl
 
 import (
 	"fmt"

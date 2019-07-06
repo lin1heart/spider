@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"strconv"
 )
-import _ "github.com/go-sql-driver/mysql"
 
 import (
 	"fmt"
