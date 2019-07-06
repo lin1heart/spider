@@ -30,5 +30,6 @@ func main() {
 func test() {
 	a := "123.html"
 	b := "book/"
+	fmt.Print(a,b)
 
 }
