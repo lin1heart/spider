@@ -13,6 +13,10 @@ services:
 go:
   - 1.12.x
 
+ignore:
+  - python/*
+  - test/*
+
 script:
 - go version
 - dep version
