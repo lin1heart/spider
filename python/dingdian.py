@@ -4,10 +4,10 @@ import ssl
 import string
 import urllib2
 import pymysql
-import logging
 import operator
 import threading
 from bs4 import BeautifulSoup
+from LogUtils import Log
 
 
 #设置编码
@@ -19,26 +19,17 @@ except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
-#log
-logger = logging.getLogger("dingdian_spider")
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler("spider_error.log")
-fh.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s : %(message)s")
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-logger.addHandler(fh)
-logger.addHandler(ch)
 
-#根据传入参数设置从哪里开始下载
+
+# 根据传入参数设置从哪里开始下载
 starturl = "https://www.dingdiann.com"
 searchurl = "https://www.dingdiann.com/searchbook.php?keyword="
 db = pymysql.connect("39.104.226.149", "root", "root", "spider", charset='utf8')
+id_not_in={}
+logger = Log()
 
 
-#获取章节内容
+# 获取章节内容
 def spiderContent(url,id, name):
     try:
         response = urllib2.urlopen(url, timeout=60)
@@ -64,53 +55,54 @@ def spiderContent(url,id, name):
         else:
             logger.info("本章节未更新或者获取章节异常 "+bookName +" | "+ name)
             return
-    except Exception, e:
+    except urllib2.URLError, e:
         logger.error(e)
         logger.error(name)
-        logger.error(data)
-
-
 
 
 #从目录爬取小说,获取第一章
 def spiderM(url, id, name):
-    response = urllib2.urlopen(url)
-    the_page = response.read()
-    soup = BeautifulSoup(the_page, "html.parser")
-    books = soup.select("dd > a")
-    length = len(books)
-    count = 0
-    hreflist = []
-    textlist = []
-    if length > 20:
-        for a in books:
-            if count > 20:
-                break
-            count += 1
-            hreflist.append(int(a["href"].split('/')[2].split('.')[0]))
-            textlist.append(a.text)
-    else:
-        for a in books:
-            hreflist.append(int(a["href"].split('/')[2].split('.')[0]))
-            textlist.append(a.text)
+    try:
+        response = urllib2.urlopen(url)
+        the_page = response.read()
+        soup = BeautifulSoup(the_page, "html.parser")
+        books = soup.select("dd > a")
+        length = len(books)
+        count = 0
+        hreflist = []
+        textlist = []
+        if length > 20:
+            for a in books:
+                if count > 20:
+                    break
+                count += 1
+                hreflist.append(int(a["href"].split('/')[2].split('.')[0]))
+                textlist.append(a.text)
+        else:
+            for a in books:
+                hreflist.append(int(a["href"].split('/')[2].split('.')[0]))
+                textlist.append(a.text)
+        min_index, min_number = min(enumerate(hreflist), key=operator.itemgetter(1))
+        updateF(url+str(min_number)+".html", id)
+        spiderContent(url+str(min_number)+".html", id, name)
+    except urllib2.URLError, err:
+        logger.error("spiderM:"+err)
 
-    min_index, min_number = min(enumerate(hreflist), key=operator.itemgetter(1))
-    updateF(url+str(min_number)+".html", id)
-    spiderContent(url+str(min_number)+".html", id, name)
 
-
-#通过网站搜索功能 先搜索小说，再爬取
+# 通过网站搜索功能 先搜索小说，再爬取
 def searchNovel(name, id):
-    response = urllib2.urlopen(searchurl+urllib2.quote(str(name)))
-    the_page = response.read()
-    soup = BeautifulSoup(the_page, "html.parser")
-    book = soup.select("span[class='s2'] > a")
-    if not book:
-        return
-    for boo in book:
-        if boo.text == name:
-            spiderM(starturl + boo["href"], id, name)
-
+    try:
+        response = urllib2.urlopen(searchurl+urllib2.quote(str(name)))
+        the_page = response.read()
+        soup = BeautifulSoup(the_page, "html.parser")
+        book = soup.select("span[class='s2'] > a")
+        if not book:
+            return
+        for boo in book:
+            if boo.text == name:
+                spiderM(starturl + boo["href"], id, name)
+    except urllib2.URLError, err:
+        logger.error(err)
 
 
 # 判断是否需要查询小说，有crawl_url就不需要查询
@@ -145,27 +137,37 @@ def search(id):
 
 
 def insert(data,id,name,url,next):
-    icursor = db.cursor()
-    sqlInsert = "INSERT INTO novel(chapter_index,chapter_title,oss_id,content,crawl_url,next_crawl_url)VALUES ('%d','%s','%d','%s','%s','%s')"
-    icursor.execute("SELECT chapter_index,chapter_title,next_crawl_url FROM novel WHERE oss_id=%d ORDER BY chapter_index DESC LIMIT 1" %(id))
-    sdata = icursor.fetchone()
-    if not sdata:
-        index = 1
-        icursor.execute(sqlInsert %(index,name,id,data,url,next))
-        db.commit()
-    if sdata and sdata[1] != name:
-        index = sdata[0] + 1
-        icursor.execute(sqlInsert %(index,name,id,data,url,next))
-        db.commit()
-    elif sdata and not sdata[2]:
-        c_index = sdata[0]
-        icursor.execute("UPDATE novel SET next_crawl_url='%s' WHERE oss_id=%d AND chapter_index=%d" %(next, id, c_index))
-        db.commit()
+    try:
+        icursor = db.cursor()
+        sqlInsert = "INSERT INTO novel(chapter_index,chapter_title,oss_id,content,crawl_url,next_crawl_url)VALUES ('%d','%s','%d','%s','%s','%s')"
+        icursor.execute("SELECT chapter_index,chapter_title,next_crawl_url FROM novel WHERE oss_id=%d ORDER BY chapter_index DESC LIMIT 1" %(id))
+        sdata = icursor.fetchone()
+        if not sdata:
+            index = 1
+            icursor.execute(sqlInsert %(index,name,id,data,url,next))
+            db.commit()
+        if sdata and sdata[1] != name:
+            index = sdata[0] + 1
+            icursor.execute(sqlInsert %(index,name,id,data,url,next))
+            db.commit()
+        elif sdata and not sdata[2]:
+            c_index = sdata[0]
+            icursor.execute("UPDATE novel SET next_crawl_url='%s' WHERE oss_id=%d AND chapter_index=%d" %(next, id, c_index))
+            db.commit()
+    except Exception, e:
+        logger.error("sql err:" + e)
+        db.rollback()
+
 
 def updateF(curl,id):
-    ucursor = db.cursor()
-    ucursor.execute("UPDATE oss SET crawl_url='%s' WHERE id=%d" %(curl,id))
-    db.commit()
+    try:
+        ucursor = db.cursor()
+        ucursor.execute("UPDATE oss SET crawl_url='%s' WHERE id=%d" %(curl,id))
+        db.commit()
+    except Exception, e:
+        logger.error("sql err:" + e)
+        db.rollback()
+
 
 def select():
     ocursor = db.cursor()
@@ -173,11 +175,13 @@ def select():
     data = ocursor.fetchall()
     return data
 
+
 def main():
     list = select()
     spiderStart(list)
     # db.close()
     threading.Timer(1.5, main).start()
+
 
 if __name__ == '__main__':
     main()
