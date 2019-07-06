@@ -1,0 +1,24 @@
+language: go
+
+
+env:
+  - DEP_VERSION=0.5.0
+
+services:
+  - docker
+
+before_install:                                                                 
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
+  - dep ensure
+
+go:
+  - 1.x
+  - "1.10"
+  - 1.11.x
+  - master
+
+script:
+- go version
+- dep version
+- go build -o spider ./src
+
