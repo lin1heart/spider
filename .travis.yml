@@ -7,10 +7,8 @@ env:
 services:
   - docker
 
-before_install:                                                                 
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
-
-
+# before_install:                                                                 
+#   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
 
 go:
   - 1.12.x
