@@ -19,8 +19,7 @@ ignore:
 
 script:
 - go version
-- dep version
-- pwd
 - echo $GOPATH
-- go build -o spider ./src
+- pwd
+- go build -o spider ./go/src
 
