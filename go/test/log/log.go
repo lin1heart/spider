@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func main ( ) {
+func main() {
 	fmt.Println("1")
 	log.Print("2")
 	log.Fatal("3")

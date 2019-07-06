@@ -96,19 +96,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:86e4c340b0ab0a814f3e3d2c28b693f286f5e1e0178f25288efeb55768086fad"
-  name = "github.com/lin1heart/spider"
-  packages = [
-    "go/src/db",
-    "go/src/novel",
-    "go/src/novel/www/qu/la",
-    "go/src/util",
-  ]
-  pruneopts = "UT"
-  revision = "d2ec4d8cd5a5afbbebe8dd995d90d5bb661e0a6a"
-
-[[projects]]
-  branch = "master"
   digest = "1:374ce4704830a7b9729d8798bcb4ac796f9c7bbb6903950ec55b71332caffe31"
   name = "github.com/saintfish/chardet"
   packages = ["."]
@@ -187,11 +174,6 @@
   input-imports = [
     "github.com/go-sql-driver/mysql",
     "github.com/gocolly/colly",
-    "github.com/lin1heart/spider/go/src/db",
-    "github.com/lin1heart/spider/go/src/novel",
-    "github.com/lin1heart/spider/go/src/novel/www/qu/la",
-    "github.com/lin1heart/spider/go/src/util",
-    "golang.org/x/net/html",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

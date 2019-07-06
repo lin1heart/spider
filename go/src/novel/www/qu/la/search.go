@@ -27,7 +27,6 @@ func crawlNovelChapters(id int, basehref string) {
 		}
 	}()
 
-
 	var counter = 0
 	var minHtmlIndex = 99999999999
 	var htmlhref = ""
@@ -117,7 +116,7 @@ func crawlSearchResult(name string, id int) {
 	escapedTitle := url.QueryEscape(name)
 	err := c.Visit(SEARCH_URL + escapedTitle)
 	if err != nil {
-		log.Printf("Visit %s e ", SEARCH_URL + escapedTitle, err)
+		log.Printf("Visit %s e ", SEARCH_URL+escapedTitle, err)
 	}
 
 }

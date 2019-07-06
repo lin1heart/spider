@@ -1,12 +1,14 @@
 package la
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/gocolly/colly"
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 	"time"
@@ -28,6 +30,9 @@ func Crawl(name string, crawlUrl string) {
 		colly.DisallowedDomains("https://sccdn.002lzj.com"),
 		colly.UserAgent(util.RandomString()),
 	)
+	c.WithTransport(&http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	})
 
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String(), r.Headers)
@@ -99,7 +104,6 @@ func Crawl(name string, crawlUrl string) {
 	if err != nil {
 		log.Printf("Visit %s e ", row.CrawlUrl, err)
 	}
-
 
 }
 

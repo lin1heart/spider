@@ -81,11 +81,10 @@ func prepareChapter(ossId int) map[int]map[string]string {
 }
 
 func HandleNovelRow(novel NovelRow) {
-	fmt.Println("ready HandleNovelRow", novel)
+	fmt.Println("ready HandleNovelRow novel id", novel.OssId, novel.Title)
 	exist, novelId := checkExist(novel.CrawlUrl)
 
 	if exist {
-		fmt.Println("ignore due to exist", novel)
 		updateNextCrawlUrl(novelId, novel.NextCrawlUrl)
 		return
 	}
