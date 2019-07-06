@@ -9,16 +9,16 @@ services:
 
 before_install:                                                                 
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
-  - go version
-  - dep version
-  - pwd
-  - echo $GOPATH
-  - dep ensure
+
+
 
 go:
   - 1.12.x
-  - master
 
 script:
+- go version
+- dep version
+- pwd
+- echo $GOPATH
 - go build -o spider ./src
 
