@@ -8,5 +8,11 @@ networks:
 services:
   python:
     image: "lin1heart/dingdian"
+    command: python diandian.py
+    networks:
+    - n1
+  push:
+    image: "lin1heart/dingdian"
+    command: python push.py
     networks:
     - n1
