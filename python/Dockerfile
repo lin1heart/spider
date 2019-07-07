@@ -1,10 +1,10 @@
 FROM python:2.7.16-slim-stretch
 
-COPY ./dingdian.py /python/
+COPY ./spider/python/dingdian.py /python/
 
-COPY ./LogUtils.py /python/
+COPY ./spider/python/LogUtils.py /python/
 
-COPY ./requirements.txt /python/
+COPY ./spider/python/requirements.txt /python/
 
 WORKDIR /python
 
