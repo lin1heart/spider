@@ -180,7 +180,7 @@ def main():
     list = select()
     spiderStart(list)
     # db.close()
-    threading.Timer(1.5, main).start()
+    threading.Timer(60, main).start()
 
 
 if __name__ == '__main__':

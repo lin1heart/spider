@@ -1,0 +1,12 @@
+
+version: "3.5"
+
+networks:
+  n1:
+    external: true
+
+services:
+  python:
+    image: "lin1heart/dingdian"
+    networks:
+    - n1
