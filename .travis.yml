@@ -19,5 +19,5 @@ script:
 - docker build -f python/Dockerfile -t lin1heart/dingdian .
 - docker login -u $DOCKER_USER_LIN -p $DOCKER_PASS_LIN
 - docker push lin1heart/dingdian
-- curl -X POST http://util.online:9000/api/webhooks/313a65e1-8e99-47b6-945e-11005d79fba3
+- curl -X POST http://util.online:9000/api/webhooks/2e134b95-28b2-4598-8bcc-4d5f3384d045
 
