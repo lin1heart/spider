@@ -61,7 +61,7 @@ func crawlNovelChapters(id int, basehref string) {
 			if err == nil {
 				if htmlIndex < minHtmlIndex {
 					minHtmlIndex = htmlIndex
-					htmlhref = href
+					htmlhref = htmlIndexStr
 				}
 			} else {
 				fmt.Print(err)
