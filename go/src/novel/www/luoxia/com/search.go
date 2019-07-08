@@ -1,4 +1,4 @@
-package la
+package com
 
 import (
 	"crypto/tls"
@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var SEARCH_URL = "https://sou.xanbhx.com/search?siteid=qula&q="
+var SEARCH_URL = "https://www.luoxia.com/?s="
 
 var mysql = db.Mysql
 var searchedIds []string
@@ -43,20 +43,17 @@ func crawlNovelChapters(id int, basehref string) {
 		fmt.Println("Visiting", r.URL.String(), r.Headers)
 	})
 
-	c.OnHTML("#list dd a", func(e *colly.HTMLElement) {
+	c.OnHTML(".book-list a", func(e *colly.HTMLElement) {
 		counter += 1
 
 		href := e.Attr("href")
 		splitsArr := strings.Split(href, "/")
 
-		//text := strings.TrimSpace(e.Text)
-		//fmt.Println("list text ", text)
-		//fmt.Println("list href ", href)
 
-		if len(splitsArr) == 4 {
-			htmlIndexStr := splitsArr[3]
+		if len(splitsArr) == 5 {
+			htmlIndexStr := splitsArr[4]
 
-			splits2 := strings.Split(htmlIndexStr, ".html")
+			splits2 := strings.Split(htmlIndexStr, ".htm")
 			htmlIndex, err := strconv.Atoi(splits2[0])
 			if err == nil {
 				if htmlIndex < minHtmlIndex {
@@ -99,7 +96,7 @@ func crawlSearchResult(name string, id int) {
 		fmt.Println("Visiting", r.URL.String(), r.Headers)
 	})
 
-	c.OnHTML("#search-main .search-list li .s2 a", func(e *colly.HTMLElement) {
+	c.OnHTML(".pd-search .cat-search-item a", func(e *colly.HTMLElement) {
 		text := strings.TrimSpace(e.Text)
 		href := e.Attr("href")
 
@@ -121,7 +118,6 @@ func crawlSearchResult(name string, id int) {
 
 }
 
-
 func queryNullCrawlUrlOss() {
 	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE (crawl_url IS NULL or crawl_url = '') AND type ='NOVEL' %s ", util.GenerateSqlIdsSuffix(searchedIds))
 	rows, err := mysql.Query(sqlString)
@@ -138,6 +134,7 @@ func queryNullCrawlUrlOss() {
 		fmt.Printf("add ossId %v to searchedIds \n", id)
 	}
 }
+
 func LoopQueryNullCrawlUrlOss() {
 	for true {
 

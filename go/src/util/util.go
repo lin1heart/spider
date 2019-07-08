@@ -1,8 +1,10 @@
 package util
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
+	"strings"
 )
 
 func CheckError(errMasg error) {
@@ -21,4 +23,15 @@ func RandomString() string {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return string(b)
+}
+
+
+func GenerateSqlIdsSuffix(ids []string) string {
+	idsStr := strings.Join(ids, ",")
+
+	if idsStr == "" {
+		return ""
+	}
+	sqlSuffix := fmt.Sprintf(" AND id NOT IN ( %s )", idsStr)
+	return sqlSuffix
 }

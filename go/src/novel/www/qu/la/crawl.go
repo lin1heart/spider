@@ -113,19 +113,10 @@ func loopCrawl(name string, crawlUrl string) {
 	}
 }
 
-func generateSqlSuffix(ids []string) string {
-	idsStr := strings.Join(ids, ",")
-
-	if idsStr == "" {
-		return ""
-	}
-	sqlSuffix := fmt.Sprintf(" AND id NOT IN ( %s )", idsStr)
-	return sqlSuffix
-}
 
 func queryTodoOss() {
 
-	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE crawl_url LIKE '%s' AND complete = 0 %s ", WWW_QU_LA_PREFIX, generateSqlSuffix(crawlingIds))
+	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE crawl_url LIKE '%s' AND complete = 0 %s ", WWW_QU_LA_PREFIX, util.GenerateSqlIdsSuffix(crawlingIds))
 	rows, err := db.Mysql.Query(sqlString)
 
 	ossResults, err := db.ConvertToRows(rows)
