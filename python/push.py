@@ -70,7 +70,7 @@ def selNewnovel(id):
             if da[0] > int(keyVa[id]):
                 # 更新key_value
                 updKeyValue(id, da[0])
-                keyVa.update({id: da[0]})
+                # keyVa.update({id: da[0]})
         else:
             # 插入key_value表 加入内存
             insertKeyValue(id, da[0])
