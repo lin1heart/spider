@@ -66,8 +66,7 @@ def selNewnovel(id):
     db.commit()
     da = novelCur.fetchone()
     if da:
-        chapter = keyVa[id]
-        if chapter:
+        if keyVa.has_key(id):
             if da[0] > int(keyVa[id]):
                 # 更新key_value
                 updKeyValue(id, da[0])
