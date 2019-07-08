@@ -4,6 +4,8 @@ COPY ./python/dingdian.py /python/
 
 COPY ./python/LogUtils.py /python/
 
+COPY ./python/push.py /python/
+
 COPY ./python/requirements.txt /python/
 
 WORKDIR /python
