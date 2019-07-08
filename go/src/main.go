@@ -1,8 +1,11 @@
 package main
 
-import "github.com/lin1heart/spider/go/src/novel/www/luoxia/com"
+import (
+	"github.com/lin1heart/spider/go/src/novel/www/luoxia/com"
+	"github.com/lin1heart/spider/go/src/novel/www/qu/la"
+)
 
 func main() {
-	//www_qu_la.Main()
+	go la.Main()
 	com.Main()
 }

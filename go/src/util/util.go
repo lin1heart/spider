@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"strings"
+	"unicode/utf8"
 )
 
 func CheckError(errMasg error) {
@@ -25,7 +26,6 @@ func RandomString() string {
 	return string(b)
 }
 
-
 func GenerateSqlIdsSuffix(ids []string) string {
 	idsStr := strings.Join(ids, ",")
 
@@ -34,4 +34,15 @@ func GenerateSqlIdsSuffix(ids []string) string {
 	}
 	sqlSuffix := fmt.Sprintf(" AND id NOT IN ( %s )", idsStr)
 	return sqlSuffix
+}
+
+func FilterEmoji(content string) string {
+	new_content := ""
+	for _, value := range content {
+		_, size := utf8.DecodeRuneInString(string(value))
+		if size <= 3 {
+			new_content += string(value)
+		}
+	}
+	return new_content
 }

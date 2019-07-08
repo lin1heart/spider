@@ -113,7 +113,6 @@ func loopCrawl(name string, crawlUrl string) {
 	}
 }
 
-
 func queryTodoOss() {
 
 	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE crawl_url LIKE '%s' AND complete = 0 %s ", WWW_QU_LA_PREFIX, util.GenerateSqlIdsSuffix(crawlingIds))

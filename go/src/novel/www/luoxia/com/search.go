@@ -49,7 +49,6 @@ func crawlNovelChapters(id int, basehref string) {
 		href := e.Attr("href")
 		splitsArr := strings.Split(href, "/")
 
-
 		if len(splitsArr) == 5 {
 			htmlIndexStr := splitsArr[4]
 

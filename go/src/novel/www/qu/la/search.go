@@ -121,7 +121,6 @@ func crawlSearchResult(name string, id int) {
 
 }
 
-
 func queryNullCrawlUrlOss() {
 	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE (crawl_url IS NULL or crawl_url = '') AND type ='NOVEL' %s ", util.GenerateSqlIdsSuffix(searchedIds))
 	rows, err := mysql.Query(sqlString)
