@@ -5,9 +5,9 @@ import (
 	"math/rand"
 )
 
-func main () {
+func main() {
 
-	var list = []string{"11","22","33","44"}
+	var list = []string{"11", "22", "33", "44"}
 
 	fmt.Println(rand.Intn(len(list)))
 	fmt.Println(rand.Intn(len(list)))
