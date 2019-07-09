@@ -72,7 +72,7 @@ func Crawl(name string, crawlUrl string) {
 			fmt.Printf("%s will sleep 10 min due to latest \n", name)
 			time.Sleep(10 * time.Minute)
 		} else {
-			time.Sleep(5 * time.Second)
+			time.Sleep(20 * time.Second)
 		}
 	})
 
