@@ -39,10 +39,7 @@ func Crawl(name string, crawlUrl string) {
 
 	c.OnHTML(".post", func(e *colly.HTMLElement) {
 		title := e.ChildText("#nr_title")
-		content := e.ChildText("#nr1 p ")
-		newContent := util.FilterEmoji(content)
-		fmt.Println("content", content)
-		fmt.Println("newContent", newContent)
+		content := e.ChildText("#nr1 ")
 		nextRelativeUrl := e.ChildAttr(".nav2 .next a", "href")
 		nextSpiltUrls := strings.Split(nextRelativeUrl, "/")
 
@@ -64,7 +61,7 @@ func Crawl(name string, crawlUrl string) {
 
 		novelRow := novel.NovelRow{
 			Title:        title,
-			Content:      newContent,
+			Content:      content,
 			CrawlUrl:     crawlUrl,
 			NextCrawlUrl: nextAbsoluteUrl,
 			OssId:        ossId,
