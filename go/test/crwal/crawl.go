@@ -1,8 +1,9 @@
-package crawl
+package crwal
 
 import (
 	"fmt"
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/proxy"
 	"github.com/lin1heart/spider/go/src/util"
 	"math/rand"
 	"regexp"
@@ -27,12 +28,11 @@ func main() {
 		colly.UserAgent(RandomString()),
 	)
 
-	//if p, err := proxy.RoundRobinProxySwitcher(
-	//	//"socks5://127.0.0.1:1086",
-	//	"http://127.0.0.1:1087",
-	//); err == nil {
-	//	c.SetProxyFunc(colly.ProxyFunc(p))
-	//}
+	rp, err1 := proxy.RoundRobinProxySwitcher(util.RandomProxy())
+	if err1 != nil {
+		fmt.Println("roundRobin ", err1)
+	}
+	c.SetProxyFunc(rp)
 
 	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
@@ -66,7 +66,9 @@ func main() {
 	})
 	c.AllowURLRevisit = true
 	var err error
-	err = c.Visit("https://www.qu.la/book/61524/3705180.html")
+
+	err = c.Visit("https://util.online/headers")
+	err = c.Visit("https://util.online/headers")
 	util.CheckError(err)
 
 }
