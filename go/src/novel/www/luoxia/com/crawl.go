@@ -61,7 +61,7 @@ func Crawl(name string, crawlUrl string) {
 		}
 		nextUrlSplits := strings.Split(nextAbsoluteUrl, "/")
 		currentUrlSplits := strings.Split(crawlUrl, "/")
-		if len(nextUrlSplits) == 5 && nextUrlSplits[4] != currentUrlSplits[4] {
+		if len(nextUrlSplits) == 5 && (nextUrlSplits[3] != currentUrlSplits[3]) {
 			fmt.Println("invalid next url", nextAbsoluteUrl)
 			nextAbsoluteUrl = ""
 		}
