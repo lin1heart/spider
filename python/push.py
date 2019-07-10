@@ -1,11 +1,15 @@
 # coding=utf-8
 import re
+import sys
 import json
 import pymysql
 import requests
 import threading
 from LogUtils import Log
 
+#设置编码
+reload(sys)
+sys.setdefaultencoding('utf-8')
 url = 'http://util.online/spider/api/mail'
 weburl = 'https://util.online/spider/novel/'
 body = {
