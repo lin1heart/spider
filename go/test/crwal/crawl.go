@@ -1,11 +1,12 @@
-package crawl
+package crwal
 
 import (
 	"fmt"
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/proxy"
 	"github.com/lin1heart/spider/go/src/util"
 	"math/rand"
-	"regexp"
+	"strings"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -27,12 +28,11 @@ func main() {
 		colly.UserAgent(RandomString()),
 	)
 
-	//if p, err := proxy.RoundRobinProxySwitcher(
-	//	//"socks5://127.0.0.1:1086",
-	//	"http://127.0.0.1:1087",
-	//); err == nil {
-	//	c.SetProxyFunc(colly.ProxyFunc(p))
-	//}
+	rp, err1 := proxy.RoundRobinProxySwitcher(util.ProxyList...)
+	if err1 != nil {
+		fmt.Println("roundRobin ", err1)
+	}
+	c.SetProxyFunc(rp)
 
 	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
@@ -40,16 +40,25 @@ func main() {
 	})
 
 	// On every a element which has href attribute call callback
-	c.OnHTML(".content_read", func(e *colly.HTMLElement) {
-		content := e.ChildText("#content")
+	c.OnHTML(".post", func(e *colly.HTMLElement) {
+		title := e.ChildText("#nr_title")
+		content := e.ChildText("#nr1 ")
+		nextAbsoluteUrl := e.ChildAttr(".nav2 .next a", "href")
 
-		var re = regexp.MustCompile(`\s\schaptererror\(\);`)
-		s := re.ReplaceAllString(content, ``)
+		crawlUrl := e.Request.URL.String()
 
-		match, _ := regexp.MatchString("^正在手打中，客官请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新！", content)
-		fmt.Println("match", match)
-
-		fmt.Println("content", content, s)
+		fmt.Println("title", title)
+		fmt.Println("content", content)
+		if nextAbsoluteUrl == "" {
+			fmt.Println("nextAbsoluteUrl is null")
+			nextAbsoluteUrl = ""
+		}
+		nextUrlSplits := strings.Split(nextAbsoluteUrl, "/")
+		currentUrlSplits := strings.Split(crawlUrl, "/")
+		if len(nextUrlSplits) == 5 && nextUrlSplits[4] != currentUrlSplits[4] {
+			fmt.Println("invalid next url")
+			nextAbsoluteUrl = ""
+		}
 
 	})
 
@@ -66,7 +75,8 @@ func main() {
 	})
 	c.AllowURLRevisit = true
 	var err error
-	err = c.Visit("https://www.qu.la/book/61524/3705180.html")
+
+	err = c.Visit("https://www.luoxia.com/baiye/12453.htm")
 	util.CheckError(err)
 
 }

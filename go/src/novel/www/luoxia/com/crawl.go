@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/proxy"
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
@@ -29,6 +30,16 @@ func Crawl(name string, crawlUrl string) {
 		colly.DisallowedDomains("www.google-analytics.com", "tpc.googlesyndication.com", "dt.adsafeprotected.com"),
 		colly.UserAgent(util.RandomString()),
 	)
+
+	randomProxy := util.RandomProxy()
+	fmt.Println("random proxy ", randomProxy)
+
+	rp, err1 := proxy.RoundRobinProxySwitcher(randomProxy)
+	if err1 != nil {
+		fmt.Println("roundRobin ", err1)
+	}
+	c.SetProxyFunc(rp)
+
 	c.WithTransport(&http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	})
@@ -39,32 +50,25 @@ func Crawl(name string, crawlUrl string) {
 
 	c.OnHTML(".post", func(e *colly.HTMLElement) {
 		title := e.ChildText("#nr_title")
-		content := e.ChildText("#nr1 p ")
-		newContent := util.FilterEmoji(content)
-		fmt.Println("content", content)
-		fmt.Println("newContent", newContent)
-		nextRelativeUrl := e.ChildAttr(".nav2 .next a", "href")
-		nextSpiltUrls := strings.Split(nextRelativeUrl, "/")
-
-		nextSpiltUrl := ""
-		if len(nextSpiltUrls) == 5 {
-
-			nextSpiltUrl = nextSpiltUrls[4]
-		}
+		content := e.ChildText("#nr1 ")
+		nextAbsoluteUrl := e.ChildAttr(".nav2 .next a", "href")
 		crawlUrl := e.Request.URL.String()
 
-		splitUrl := strings.Split(e.Request.URL.String(), "/")
-		splitUrl[len(splitUrl)-1] = nextSpiltUrl
 
-		nextAbsoluteUrl := strings.Join(splitUrl, "/")
-
-		if nextRelativeUrl == "" {
+		if nextAbsoluteUrl == "" {
+			fmt.Println("nextAbsoluteUrl is null")
+			nextAbsoluteUrl = ""
+		}
+		nextUrlSplits := strings.Split(nextAbsoluteUrl, "/")
+		currentUrlSplits := strings.Split(crawlUrl, "/")
+		if len(nextUrlSplits) == 5 && (nextUrlSplits[3] != currentUrlSplits[3]) {
+			fmt.Println("invalid next url", nextAbsoluteUrl)
 			nextAbsoluteUrl = ""
 		}
 
 		novelRow := novel.NovelRow{
 			Title:        title,
-			Content:      newContent,
+			Content:      content,
 			CrawlUrl:     crawlUrl,
 			NextCrawlUrl: nextAbsoluteUrl,
 			OssId:        ossId,
@@ -75,7 +79,7 @@ func Crawl(name string, crawlUrl string) {
 			fmt.Printf("%s will sleep 10 min due to latest \n", name)
 			time.Sleep(10 * time.Minute)
 		} else {
-			time.Sleep(5 * time.Second)
+			time.Sleep(20 * time.Second)
 		}
 	})
 
