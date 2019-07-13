@@ -145,7 +145,7 @@ def sendmail(mail,name,id,content,title):
         body["subject"] = "《" + name.encode('UTF-8') + "》 小说出最新章啦"
         body["to"] = mail
         # body["text"] = "新的章节是 " + co[1].encode('UTF-8')
-        body["html"] = "<h1>" + title.encode('UTF-8') + "</h1><div style='white-space: pre-wrap;font-size:15px;'>" + content.encode('UTF-8') + "</div><a href='"+ weburl + str(id) +"'>最新章节</a >"
+        body["html"] = "<h1>" + title.encode('UTF-8') + "</h1><div style='white-space: pre-wrap;font-size:15px;'>" + str(content) + "</div><a href='"+ weburl + str(id) +"'>最新章节</a >"
         response = requests.post(url, data = json.dumps(body), headers = headers)
     except requests.exceptions, e:
         log.error("mail send err:"+e)
