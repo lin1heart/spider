@@ -56,7 +56,12 @@ func Crawl(name string, crawlUrl string) {
 		var re = regexp.MustCompile(`\s\schaptererror\(\);`)
 		cleanContent := re.ReplaceAllString(content, ``)
 
+		fmt.Println("content", content)
+
 		match, _ := regexp.MatchString("^正在手打中，客官请稍等片刻，内容更新后，需要重新刷新页面，才能获取最新更新", content)
+
+		fmt.Println("match", match)
+		fmt.Println("nextAbsoluteUrl", nextAbsoluteUrl)
 
 		if match == true && nextAbsoluteUrl == "" {
 			fmt.Printf("%s will sleep 10 min due to invalid content \n", name, content)
