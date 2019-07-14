@@ -54,7 +54,6 @@ func Crawl(name string, crawlUrl string) {
 		nextAbsoluteUrl := e.ChildAttr(".nav2 .next a", "href")
 		crawlUrl := e.Request.URL.String()
 
-
 		if nextAbsoluteUrl == "" {
 			fmt.Println("nextAbsoluteUrl is null")
 			nextAbsoluteUrl = ""

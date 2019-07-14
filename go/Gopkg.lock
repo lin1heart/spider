@@ -176,6 +176,7 @@
     "github.com/go-sql-driver/mysql",
     "github.com/gocolly/colly",
     "github.com/gocolly/colly/proxy",
+    "golang.org/x/net/html",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -48,12 +48,9 @@ func FilterEmoji(content string) string {
 }
 
 var ProxyList = []string{
-	//"socks5://127.0.0.1:1080",
+	"socks5://127.0.0.1:1080",
 	"socks5://47.96.123.41:1080",
 	"socks5://39.104.226.149:1080",
-	"socks5://34.67.171.155:8080",
-	"socks5://43.240.103.228:9999",
-	"socks5://192.169.157.42:53185",
 }
 
 func RandomProxy() string {

@@ -32,7 +32,7 @@ func main() {
 	if err1 != nil {
 		fmt.Println("roundRobin ", err1)
 	}
-	c.SetProxyFunc(rp)
+	c.SetProxyFunc(colly.ProxyFunc(rp))
 
 	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
