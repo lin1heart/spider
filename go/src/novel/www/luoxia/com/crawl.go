@@ -65,7 +65,7 @@ func Crawl(name string, crawlUrl string) {
 			nextAbsoluteUrl = ""
 		}
 
-		novelRow := novel.NovelRow{
+		novelRow := db.NovelRow{
 			Title:        title,
 			Content:      content,
 			CrawlUrl:     crawlUrl,

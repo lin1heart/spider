@@ -69,7 +69,7 @@ func Crawl(name string, crawlUrl string) {
 			return
 		}
 
-		novelRow := novel.NovelRow{
+		novelRow := db.NovelRow{
 			Title:        title,
 			Content:      cleanContent,
 			CrawlUrl:     crawlUrl,

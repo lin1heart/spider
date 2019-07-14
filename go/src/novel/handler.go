@@ -7,20 +7,7 @@ import (
 	"strconv"
 )
 
-type NovelRow struct {
-	Title        string
-	Content      string
-	CrawlUrl     string
-	NextCrawlUrl string
-	OssId        int
-}
-type OssRow struct {
-	Id       int
-	Name     string
-	CrawlUrl string
-	Type     string
-	Url      string
-}
+
 
 const NOVEL__TYPE = "NOVEL"
 
@@ -31,7 +18,7 @@ var mysql = db.Mysql
 如果oss 已有，novel 没有， 返回 oss的 crawlUrl
 如果oss 已有，novel 已有， 返回 novel的 nextCrawlUrl, 如果nextCrawlUrl 为空 返回 crawlUrl
 */
-func PrepareNovel(name string, crawlUrl string) OssRow {
+func PrepareNovel(name string, crawlUrl string) db.OssRow {
 	sqlString := fmt.Sprintf("SELECT * FROM oss WHERE name = '%s' AND crawl_url = '%s' ", name, crawlUrl)
 	rows, err := db.Mysql.Query(sqlString)
 	util.CheckError(err)
@@ -39,7 +26,7 @@ func PrepareNovel(name string, crawlUrl string) OssRow {
 	ossResults, err := db.ConvertToRows(rows)
 	ossId, err := strconv.Atoi(ossResults[0]["id"])
 
-	var oss OssRow
+	var oss db.OssRow
 	oss.Id = ossId
 	oss.Name = ossResults[0]["name"]
 
@@ -61,7 +48,7 @@ func PrepareNovel(name string, crawlUrl string) OssRow {
 	}
 }
 
-func insertNewNovel(name string, crawlUrl string) OssRow {
+func insertNewNovel(name string, crawlUrl string) db.OssRow {
 	fmt.Println("insertNewNovel", name)
 	stmt, err := mysql.Prepare(`INSERT oss (name, type, url, crawl_url) values (?,?,?,?)`)
 	util.CheckError(err)
@@ -80,7 +67,7 @@ func prepareChapter(ossId int) map[int]map[string]string {
 	return results
 }
 
-func HandleNovelRow(novel NovelRow) {
+func HandleNovelRow(novel db.NovelRow) {
 	fmt.Println("ready HandleNovelRow novel id", novel.OssId, novel.Title)
 	exist, novelId := checkExist(novel.CrawlUrl)
 

@@ -7,7 +7,7 @@ import (
 )
 
 const MAOMI_KEY = "maomi.photo.pure"
-const MAOMI = "https://www.968uy.com/tupian/12456.html"
+const MAOMI = "https://www.968uy.com/tupian/12457.html"
 
 func UpdateOssCrawlUrl(crawlUrl string, novelId int) {
 	stmt, err := Mysql.Prepare(`UPDATE oss SET crawl_url=? WHERE id=?`)

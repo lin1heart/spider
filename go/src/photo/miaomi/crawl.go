@@ -51,7 +51,7 @@ func Crawl(crawlUrl string) {
 		webUrl := e.Request.URL.String()
 
 		nextRelativeUrl := e.ChildAttr(".next-page .content-next2 a", "href")
-		nextSplits := strings.Split(webUrl, "tupian")
+		nextSplits := strings.Split(webUrl, "/tupian")
 		nextAbsoluteUrl := nextSplits[0] + nextRelativeUrl
 
 		images := []string{}

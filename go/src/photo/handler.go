@@ -7,12 +7,13 @@ import (
 
 func HandlePhotoRows(oss db.OssRow, photos []db.PhotoRow, nextUrl string) {
 	fmt.Println("ready HandlePhotoRow photo id", oss, nextUrl, len(photos))
-	exist, _ := db.CheckOssNameExist(oss.Name)
+	exist, id := db.CheckOssNameExist(oss.Name)
 	if exist {
 		fmt.Println("oss exist", oss)
-		return
+	} else {
+		id = db.InsertOss(oss)
 	}
-	id := db.InsertOss(oss)
+
 	for _, photo := range photos {
 		handlePhotoRow(id, photo)
 	}
