@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	"strings"
 	"unicode/utf8"
 )
@@ -56,3 +57,9 @@ var ProxyList = []string{
 func RandomProxy() string {
 	return ProxyList[rand.Intn(len(ProxyList))]
 }
+
+var ENV = os.Getenv("ENV")
+
+var args = os.Args
+
+var ENTRY = args[1]
