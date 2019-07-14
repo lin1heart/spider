@@ -64,12 +64,12 @@ func Crawl(name string, crawlUrl string) {
 		fmt.Println("nextAbsoluteUrl", nextAbsoluteUrl)
 
 		if match == true && nextAbsoluteUrl == "" {
-			fmt.Printf("%s will sleep 10 min due to invalid content \n", name, content)
+			fmt.Printf("%s will sleep 10 min due to invalid content %v \n", name, content)
 			time.Sleep(10 * time.Minute)
 			return
 		}
 
-		novelRow := novel.NovelRow{
+		novelRow := db.NovelRow{
 			Title:        title,
 			Content:      cleanContent,
 			CrawlUrl:     crawlUrl,

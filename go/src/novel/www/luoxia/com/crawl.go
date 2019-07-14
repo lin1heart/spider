@@ -54,7 +54,6 @@ func Crawl(name string, crawlUrl string) {
 		nextAbsoluteUrl := e.ChildAttr(".nav2 .next a", "href")
 		crawlUrl := e.Request.URL.String()
 
-
 		if nextAbsoluteUrl == "" {
 			fmt.Println("nextAbsoluteUrl is null")
 			nextAbsoluteUrl = ""
@@ -66,7 +65,7 @@ func Crawl(name string, crawlUrl string) {
 			nextAbsoluteUrl = ""
 		}
 
-		novelRow := novel.NovelRow{
+		novelRow := db.NovelRow{
 			Title:        title,
 			Content:      content,
 			CrawlUrl:     crawlUrl,

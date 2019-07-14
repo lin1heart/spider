@@ -1,4 +1,4 @@
-package split
+package main
 
 import (
 	"fmt"
@@ -31,5 +31,8 @@ func test() {
 	a := "123.html"
 	b := "book/"
 	fmt.Print(a, b)
+
+	c := a[:len(a)-5]
+	fmt.Println("c ", c)
 
 }
