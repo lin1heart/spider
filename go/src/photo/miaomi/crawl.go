@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func Crawl(crawlUrl string) {
@@ -20,6 +21,8 @@ func Crawl(crawlUrl string) {
 			log.Printf("Crawl defer e", err) // 这里的err其实就是panic传入的内容，55
 		}
 	}()
+
+
 
 	c := colly.NewCollector(
 		colly.DisallowedDomains("www.google-analytics.com", "tpc.googlesyndication.com", "www.ftpd188.com", "img.alicdn.com", "sc02.alicdn.com"),
@@ -76,7 +79,7 @@ func Crawl(crawlUrl string) {
 				photo := db.PhotoRow{
 					Title:    photoTitle,
 					Url:      "",
-					CrawlUrl: photoUrl,
+					CrawlUrl: strings.TrimSpace(photoUrl),
 					OssId:    -1,
 					Index:    index,
 				}
@@ -90,6 +93,11 @@ func Crawl(crawlUrl string) {
 		//fmt.Println("crawlUrl",crawlUrl)
 		//fmt.Println("images",images)
 
+		if nextRelativeUrl == "" {
+			fmt.Println("miaomi return due to nextRelativeUrl ", nextRelativeUrl)
+			time.Sleep(1 * time.Hour)
+			return
+		}
 		if mediumType == "福利图片" {
 
 			oss := db.OssRow{
@@ -100,7 +108,10 @@ func Crawl(crawlUrl string) {
 				CrawlUrl: webUrl,
 			}
 			photo.HandlePhotoRows(oss, photos, nextAbsoluteUrl)
+			time.Sleep(30 * time.Second)
+
 		}
+
 
 	})
 
@@ -132,7 +143,15 @@ func PreparePhoto(key string, value string) string {
 	return dbValue
 }
 
+
+func loopCrawl() {
+	for true {
+		crawlUrl := PreparePhoto(db.MAOMI_KEY, db.MAOMI)
+		Crawl(crawlUrl)
+	}
+}
+
 func Main() {
-	crawlUrl := PreparePhoto(db.MAOMI_KEY, db.MAOMI)
-	Crawl(crawlUrl)
+	go loopCrawl()
+	photo.Sync()
 }

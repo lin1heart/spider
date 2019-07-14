@@ -17,7 +17,7 @@ import (
 func Sync() {
 	for true {
 		task()
-		time.Sleep(5 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 
 }
@@ -42,8 +42,10 @@ func task() {
 		fileName := title + "-" + index
 
 		fmt.Println("download ", ossId, url, fileName)
-		resp, _ := http.Get(url)
-		body, _ := ioutil.ReadAll(resp.Body)
+		resp, err := http.Get(url)
+		util.CheckError(err)
+		body, err := ioutil.ReadAll(resp.Body)
+		util.CheckError(err)
 		//out, _ := os.Create(fileName)
 		//io.Copy(out, bytes.NewReader(body))
 
