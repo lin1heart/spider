@@ -97,3 +97,25 @@ func InsertPhoto(row PhotoRow) int {
 
 	return int(id)
 }
+
+func QueryEmptyPhotos(imageType string) map[int]map[string]string {
+	sqlString := fmt.Sprintf(`select photo.id, photo.crawl_url, oss.id as oss_id, photo.title, photo.index from oss 
+		left join photo on photo.oss_id = oss.id 
+		where type = '%s' 
+		and (photo.url = "" or photo.url is null)
+	`, imageType)
+	rows, err := Mysql.Query(sqlString)
+	util.CheckError(err)
+
+	results, err := ConvertToRows(rows)
+	return results
+}
+func UpdatePhotoUrl(id int, url string) {
+	stmt, err := Mysql.Prepare(`UPDATE photo SET url=? WHERE id=?`)
+	util.CheckError(err)
+	res, err := stmt.Exec(url, id)
+	util.CheckError(err)
+	num, err := res.RowsAffected()
+	fmt.Printf("UpdatePhotoUrl id %d affect row %d \n", id, num)
+	util.CheckError(err)
+}

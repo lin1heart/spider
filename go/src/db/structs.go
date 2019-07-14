@@ -22,4 +22,3 @@ type PhotoRow struct {
 	OssId    int
 	Index    int
 }
-

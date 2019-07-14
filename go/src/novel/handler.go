@@ -7,8 +7,6 @@ import (
 	"strconv"
 )
 
-
-
 const NOVEL__TYPE = "NOVEL"
 
 var mysql = db.Mysql
