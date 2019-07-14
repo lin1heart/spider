@@ -9,6 +9,18 @@ import (
 	"unicode/utf8"
 )
 
+var ENV = os.Getenv("ENV")
+
+var args = os.Args
+
+var ENTRY = ""
+
+func init() {
+	if len(args) >= 2 {
+		ENTRY = args[1]
+	}
+}
+
 func CheckError(errMasg error) {
 	if errMasg != nil {
 		//fmt.Println("error %s", errMasg)
@@ -49,7 +61,7 @@ func FilterEmoji(content string) string {
 }
 
 var ProxyList = []string{
-	"socks5://127.0.0.1:1080",
+	//"socks5://127.0.0.1:1080",
 	"socks5://47.96.123.41:1080",
 	"socks5://39.104.226.149:1080",
 }
@@ -57,9 +69,3 @@ var ProxyList = []string{
 func RandomProxy() string {
 	return ProxyList[rand.Intn(len(ProxyList))]
 }
-
-var ENV = os.Getenv("ENV")
-
-var args = os.Args
-
-var ENTRY = args[1]
