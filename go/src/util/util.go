@@ -9,16 +9,26 @@ import (
 	"unicode/utf8"
 )
 
-var ENV = os.Getenv("ENV")
-
 var args = os.Args
-
+var ENV = os.Getenv("ENV")
 var ENTRY = ""
+var UPLOAD_BASE = "http://192.168.1.6:8888"
 
 func init() {
 	if len(args) >= 2 {
 		ENTRY = args[1]
 	}
+	osUpload := os.Getenv("UPLOAD_BASE")
+	if osUpload != "" {
+		UPLOAD_BASE = osUpload
+	}
+	if ENV == "local" {
+		ProxyList = append(ProxyList, "socks5://192.168.1.6:1080")
+	}
+
+	fmt.Println("ProxyList", ProxyList)
+	fmt.Println("ENV", ENV)
+	fmt.Println("ENTRY", ENTRY)
 }
 
 func CheckError(errMasg error) {

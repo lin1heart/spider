@@ -23,7 +23,6 @@ func Sync() {
 
 }
 
-var UPLOAD_BASE = "http://localhost:8888"
 
 func task() {
 
@@ -58,7 +57,7 @@ func task() {
 		//out, _ := os.Create(fileName)
 		//io.Copy(out, bytes.NewReader(body))
 
-		uploadUrl := fmt.Sprintf(`%s/%s/%s`, UPLOAD_BASE, ossId, index)
+		uploadUrl := fmt.Sprintf(`%s/%s/%s`, util.UPLOAD_BASE, ossId, index)
 
 		upload(uploadUrl, body)
 		db.UpdatePhotoUrl(id, uploadUrl)
