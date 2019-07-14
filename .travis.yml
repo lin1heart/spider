@@ -21,5 +21,6 @@ script:
 - docker build -f go/Dockerfile -t amanohikaru/spider .
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker push amanohikaru/spider
-- curl -X POST http://util.online:9000/api/webhooks/d24ebc41-4952-4d21-bae2-9eb124339b7a
+# - curl -X POST http://util.online:9000/api/webhooks/d24ebc41-4952-4d21-bae2-9eb124339b7a
+- curl -X POST http://util.online:9001/api/webhooks/f5418ec9-bb17-4c65-bb5c-71f7b40cf45f
 

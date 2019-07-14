@@ -2,6 +2,7 @@ package photo
 
 import (
 	"bytes"
+	"crypto/tls"
 	"fmt"
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/util"
@@ -42,7 +43,15 @@ func task() {
 		fileName := title + "-" + index
 
 		fmt.Println("download ", ossId, url, fileName)
-		resp, err := http.Get(url)
+
+		tr := &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		}
+		client := &http.Client{Transport: tr}
+
+		resp, err := client.Get(url)
+
+
 		util.CheckError(err)
 		body, err := ioutil.ReadAll(resp.Body)
 		util.CheckError(err)
