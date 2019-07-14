@@ -22,8 +22,6 @@ func Crawl(crawlUrl string) {
 		}
 	}()
 
-
-
 	c := colly.NewCollector(
 		colly.DisallowedDomains("www.google-analytics.com", "tpc.googlesyndication.com", "www.ftpd188.com", "img.alicdn.com", "sc02.alicdn.com"),
 		colly.UserAgent(util.RandomString()),
@@ -48,7 +46,7 @@ func Crawl(crawlUrl string) {
 
 	c.OnHTML("main", func(e *colly.HTMLElement) {
 		mediumType := e.ChildText(".cat_pos_l a:nth-child(2)")
-		//imageType := e.ChildText(".cat_pos_l a:nth-child(3)")
+		imageType := e.ChildText(".cat_pos_l a:nth-child(3)")
 		imageTitle := e.ChildText(".cat_pos_l a:nth-child(4)")
 
 		webUrl := e.Request.URL.String()
@@ -60,6 +58,34 @@ func Crawl(crawlUrl string) {
 		images := []string{}
 
 		photos := []db.PhotoRow{}
+
+		photoType := "PHOTO_ERROR"
+		switch imageType {
+		case "清纯唯美":
+			photoType = "PHOTO_PURE"
+			break
+		case "自拍偷拍":
+			photoType = "PHOTO_SELF"
+			break
+		case "亚洲色图":
+			photoType = "PHOTO_EAST"
+			break
+		case "欧美色图":
+			photoType = "PHOTO_WEST"
+			break
+		case "美腿丝袜":
+			photoType = "PHOTO_UNIFORM"
+			break
+		case "乱伦熟女":
+			photoType = "PHOTO_RAPE"
+			break
+		case "卡通动漫":
+			photoType = "PHOTO_COMIC"
+			break
+		case "极品美女":
+			photoType = "PHOTO_RANK"
+			break
+		}
 
 		e.ForEach(".content img", func(_ int, elem *colly.HTMLElement) {
 			photoUrl := elem.Attr("data-original")
@@ -104,14 +130,13 @@ func Crawl(crawlUrl string) {
 				Id:       -1,
 				Name:     imageTitle,
 				Url:      "",
-				Type:     "PHOTO_PURE",
+				Type:     photoType,
 				CrawlUrl: webUrl,
 			}
 			photo.HandlePhotoRows(oss, photos, nextAbsoluteUrl)
 			time.Sleep(30 * time.Second)
 
 		}
-
 
 	})
 
@@ -142,7 +167,6 @@ func PreparePhoto(key string, value string) string {
 	}
 	return dbValue
 }
-
 
 func loopCrawl() {
 	for true {
