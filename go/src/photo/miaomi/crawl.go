@@ -94,9 +94,9 @@ func Crawl(crawlUrl string) {
 			splits := strings.Split(photoUrl, "/")
 
 			if len(splits) == 7 {
-				splits2 := strings.Split(splits[6], "-")
+				//splits2 := strings.Split(splits[6], "-")
 
-				splits3 := strings.Split(splits2[1], ".")
+				splits3 := strings.Split(splits[6], ".")
 				index, err := strconv.Atoi(splits3[0])
 				util.CheckError(err)
 
