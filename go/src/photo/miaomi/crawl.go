@@ -176,6 +176,6 @@ func loopCrawl() {
 }
 
 func Main() {
-	go loopCrawl()
+	//go loopCrawl()
 	photo.Sync()
 }
