@@ -95,9 +95,16 @@ func Crawl(crawlUrl string) {
 
 			if len(splits) == 7 {
 				//splits2 := strings.Split(splits[6], "-")
+				var indexString string
+				splits2 := strings.Split(splits[6], "_tmb.jpg")
+				if len(splits2) == 2 {
+					indexString = splits2[0]
+				} else {
+					splits3 := strings.Split(splits[6], ".")
+					indexString = splits3[0]
+				}
 
-				splits3 := strings.Split(splits[6], ".")
-				index, err := strconv.Atoi(splits3[0])
+				index, err := strconv.Atoi(indexString)
 				util.CheckError(err)
 
 				images = append(images, elem.Attr("data-original"))
@@ -176,6 +183,6 @@ func loopCrawl() {
 }
 
 func Main() {
-	//go loopCrawl()
+	go loopCrawl()
 	photo.Sync()
 }

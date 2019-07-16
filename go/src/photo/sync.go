@@ -23,7 +23,6 @@ func Sync() {
 
 }
 
-
 func task() {
 
 	rows := db.QueryEmptyPhotos("PHOTO_PURE")
@@ -44,12 +43,11 @@ func task() {
 		fmt.Println("download ", ossId, url, fileName)
 
 		tr := &http.Transport{
-			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
 		client := &http.Client{Transport: tr}
 
 		resp, err := client.Get(url)
-
 
 		util.CheckError(err)
 		body, err := ioutil.ReadAll(resp.Body)
