@@ -61,7 +61,7 @@ func task() {
 
 		upload(uploadUrl, body)
 		db.UpdatePhotoUrl(id, uploadUrl)
-		time.Sleep(5 * time.Second)
+		//time.Sleep(1 * time.Second)
 	}
 
 	fmt.Println("rows", rows)
