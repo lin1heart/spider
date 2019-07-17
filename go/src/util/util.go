@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"strings"
@@ -33,8 +32,8 @@ func init() {
 
 func CheckError(errMasg error) {
 	if errMasg != nil {
-		//fmt.Println("error %s", errMasg)
-		log.Fatal(errMasg)
+		fmt.Println("error %s", errMasg)
+		//log.Fatal(errMasg)
 		panic(errMasg)
 	}
 }
