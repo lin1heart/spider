@@ -52,8 +52,12 @@ func task() {
 		client := &http.Client{Transport: tr}
 
 		resp, err := client.Get(url)
+		if err != nil {
+			fmt.Println("client get  err", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
 
-		util.CheckError(err)
 		body, err := ioutil.ReadAll(resp.Body)
 		util.CheckError(err)
 		//out, _ := os.Create(fileName)
