@@ -38,7 +38,7 @@ func task() {
 
 		id, err := strconv.Atoi(idString)
 		if err != nil {
-			fmt.Println("sync task strconv.Atoi err", idString, row)
+			fmt.Println("sync task strconv.Atoi err", idString, err, row)
 			continue
 		}
 

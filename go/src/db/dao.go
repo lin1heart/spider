@@ -100,7 +100,7 @@ func InsertPhoto(row PhotoRow) int {
 
 func QueryEmptyPhotos(imageType string) map[int]map[string]string {
 	sqlString := fmt.Sprintf(`select photo.id, photo.crawl_url, oss.id as oss_id, photo.title, photo.index from oss 
-		left join photo on photo.oss_id = oss.id 
+		inner join photo on photo.oss_id = oss.id 
 		and (photo.url = "" or photo.url is null)
 	`)
 	rows, err := Mysql.Query(sqlString)
