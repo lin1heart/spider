@@ -35,8 +35,12 @@ func task() {
 		ossId := row["oss_id"]
 		idString := row["id"]
 
+
 		id, err := strconv.Atoi(idString)
-		util.CheckError(err)
+		if err != nil {
+			fmt.Println("sync task strconv.Atoi err", idString, row)
+			continue
+		}
 
 		fileName := title + "-" + index
 
