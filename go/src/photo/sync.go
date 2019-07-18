@@ -61,7 +61,13 @@ func task() {
 
 		uploadUrl := fmt.Sprintf(`%s/%s/%s`, util.UPLOAD_BASE, ossId, index)
 
-		upload(uploadUrl, body)
+		err = upload(uploadUrl, body)
+		if err != nil {
+			fmt.Println("upload err", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
 		db.UpdatePhotoUrl(id, uploadUrl)
 		//time.Sleep(1 * time.Second)
 	}
@@ -69,7 +75,7 @@ func task() {
 	fmt.Println("rows", rows)
 }
 
-func upload(url string, file []byte) {
+func upload(url string, file []byte) error {
 
 	fmt.Println("upload ", url, len(file))
 
@@ -87,6 +93,5 @@ func upload(url string, file []byte) {
 	contentType := writer.FormDataContentType()
 	writer.Close() // 发送之前必须调用Close()以写入结尾行
 	_, err = http.Post(url, contentType, buf)
-	util.CheckError(err)
-
+	return err
 }
