@@ -73,6 +73,7 @@ var ProxyList = []string{
 	//"socks5://127.0.0.1:1080",
 	"socks5://47.96.123.41:1080",
 	"socks5://39.104.226.149:1080",
+	"socks5://3.0.176.116:1080", // aws
 }
 
 func RandomProxy() string {
