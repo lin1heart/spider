@@ -22,6 +22,11 @@ func Sync() {
 
 }
 
+var tr = &http.Transport{
+	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+}
+var client = &http.Client{Transport: tr}
+
 func task() {
 
 	rows := db.QueryEmptyPhotos("PHOTO_PURE")
@@ -34,7 +39,6 @@ func task() {
 		ossId := row["oss_id"]
 		idString := row["id"]
 
-
 		id, err := strconv.Atoi(idString)
 		if err != nil {
 			fmt.Println("sync task strconv.Atoi err", idString, err, row)
@@ -44,11 +48,6 @@ func task() {
 		fileName := title + "-" + index
 
 		fmt.Println("download ", ossId, url, fileName)
-
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}
-		client := &http.Client{Transport: tr}
 
 		resp, err := client.Get(url)
 		if err != nil {
