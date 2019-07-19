@@ -50,6 +50,8 @@ func task() {
 		fmt.Println("download ", ossId, url, fileName)
 
 		resp, err := client.Get(url)
+		defer resp.Body.Close()
+
 		if err != nil {
 			fmt.Println("client get  err", err)
 			time.Sleep(5 * time.Second)
@@ -92,6 +94,8 @@ func upload(url string, file []byte) error {
 	// 发送表单
 	contentType := writer.FormDataContentType()
 	writer.Close() // 发送之前必须调用Close()以写入结尾行
-	_, err = http.Post(url, contentType, buf)
+	resp, err := http.Post(url, contentType, buf)
+	defer resp.Body.Close()
+
 	return err
 }
