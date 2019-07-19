@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/lin1heart/spider/go/src/util"
 	"strconv"
+	"strings"
 )
 
 const MAOMI_KEY = "maomi.photo.pure"
@@ -98,12 +99,20 @@ func InsertPhoto(row PhotoRow) int {
 	return int(id)
 }
 
-func QueryEmptyPhotos(imageType string) map[int]map[string]string {
-	sqlString := fmt.Sprintf(`select photo.id, photo.crawl_url, oss.id as oss_id, photo.title, photo.index from oss 
+func QueryEmptyPhotos(imageTypes []interface{}) map[int]map[string]string {
+
+	sqlString := fmt.Sprintf(`select photo.id, photo.crawl_url, oss.id as oss_id, photo.title, photo.index 
+		from oss 
 		inner join photo on photo.oss_id = oss.id 
 		and (photo.url = "" or photo.url is null)
-	`)
-	rows, err := Mysql.Query(sqlString)
+		and oss.type in ( ? %s )
+		limit 50
+	`, strings.Repeat(",?", len(imageTypes)-1))
+	fmt.Println("sqlString", sqlString)
+	args := []interface{}{}
+	args = append(args, imageTypes...)
+
+	rows, err := Mysql.Query(sqlString, args...)
 	util.CheckError(err)
 
 	results, err := ConvertToRows(rows)

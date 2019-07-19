@@ -15,11 +15,21 @@ import (
 )
 
 func Sync() {
+	arr1 := []interface{}{util.PhotoType["PHOTO_WEST"], util.PhotoType["PHOTO_EAST"]}
+	arr2 := []interface{}{util.PhotoType["PHOTO_UNIFORM"], util.PhotoType["RANK"]}
+	arr3 := []interface{}{util.PhotoType["PHOTO_PURE"], util.PhotoType["PHOTO_SELF"]}
+	arr4 := []interface{}{util.PhotoType["PHOTO_COMIC"], util.PhotoType["PHOTO_RAPE"]}
+	go loopTask(arr1)
+	go loopTask(arr2)
+	go loopTask(arr3)
+	loopTask(arr4)
+
+}
+func loopTask(imageTypes []interface{}) {
 	for true {
-		task()
+		go task(imageTypes)
 		time.Sleep(10 * time.Second)
 	}
-
 }
 
 var tr = &http.Transport{
@@ -27,9 +37,9 @@ var tr = &http.Transport{
 }
 var client = &http.Client{Transport: tr}
 
-func task() {
+func task(imageTypes []interface{}) {
 
-	rows := db.QueryEmptyPhotos("PHOTO_PURE")
+	rows := db.QueryEmptyPhotos(imageTypes)
 
 	for _, row := range rows {
 
@@ -73,7 +83,7 @@ func task() {
 		}
 
 		db.UpdatePhotoUrl(id, uploadUrl)
-		//time.Sleep(1 * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 
 	fmt.Println("rows", rows)

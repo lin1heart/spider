@@ -79,3 +79,14 @@ var ProxyList = []string{
 func RandomProxy() string {
 	return ProxyList[rand.Intn(len(ProxyList))]
 }
+
+var PhotoType = map[string]string{
+	"PHOTO_EAST":    "PHOTO_EAST",
+	"PHOTO_WEST":    "PHOTO_WEST",
+	"PHOTO_PURE":    "PHOTO_PURE",
+	"PHOTO_SELF":    "PHOTO_SELF",
+	"PHOTO_UNIFORM": "PHOTO_UNIFORM",
+	"PHOTO_RAPE":    "PHOTO_RAPE",
+	"PHOTO_COMIC":   "PHOTO_COMIC",
+	"PHOTO_RANK":    "PHOTO_RANK",
+}
