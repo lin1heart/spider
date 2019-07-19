@@ -108,7 +108,6 @@ func QueryEmptyPhotos(imageTypes []interface{}) map[int]map[string]string {
 		and oss.type in ( ? %s )
 		limit 50
 	`, strings.Repeat(",?", len(imageTypes)-1))
-	fmt.Println("sqlString", sqlString)
 	args := []interface{}{}
 	args = append(args, imageTypes...)
 
