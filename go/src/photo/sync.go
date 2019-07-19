@@ -8,7 +8,6 @@ import (
 	"github.com/lin1heart/spider/go/src/util"
 	"io"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -86,9 +85,7 @@ func upload(url string, file []byte) error {
 	buf := new(bytes.Buffer)
 	writer := multipart.NewWriter(buf)
 	formFile, err := writer.CreateFormFile("uploadfile", "test.jpg")
-	if err != nil {
-		log.Fatalf("Create form file failed: %s\n", err)
-	}
+	util.CheckError(err)
 
 	_, err = io.Copy(formFile, bytes.NewReader(file))
 	util.CheckError(err)

@@ -162,6 +162,7 @@ func Crawl(crawlUrl string) {
 	err := c.Visit(crawlUrl)
 	if err != nil {
 		log.Printf("Visit %s e ", crawlUrl, err)
+		time.Sleep(5 * time.Second)
 	}
 
 }
