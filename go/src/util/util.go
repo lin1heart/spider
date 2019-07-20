@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 	"strings"
+	"time"
 	"unicode/utf8"
 )
 
@@ -80,6 +81,7 @@ var ProxyList = []string{
 }
 
 func RandomProxy() string {
+	rand.Seed(time.Now().Unix())
 	return ProxyList[rand.Intn(len(ProxyList))]
 }
 

@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -32,10 +33,7 @@ func loopTask(imageTypes []interface{}) {
 	}
 }
 
-var tr = &http.Transport{
-	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-}
-var client = &http.Client{Transport: tr}
+
 
 func task(imageTypes []interface{}) {
 
@@ -43,7 +41,7 @@ func task(imageTypes []interface{}) {
 
 	for _, row := range rows {
 
-		url := row["crawl_url"]
+		crawlUrl := row["crawl_url"]
 		title := row["title"]
 		index := row["index"]
 		ossId := row["oss_id"]
@@ -57,16 +55,25 @@ func task(imageTypes []interface{}) {
 
 		fileName := title + "-" + index
 
-		fmt.Println("download ", ossId, url, fileName)
+		fmt.Println("download ", ossId, crawlUrl, fileName)
 
-		resp, err := client.Get(url)
-		defer resp.Body.Close()
+		proxyUrl, err := url.Parse(util.RandomProxy())
+		fmt.Println("sync proxyUrl", proxyUrl)
+		var tr = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Proxy: http.ProxyURL(proxyUrl),
+		}
+		client := &http.Client{Transport: tr}
+
+
+		resp, err := client.Get(crawlUrl)
 
 		if err != nil {
 			fmt.Println("client get  err", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
+		defer resp.Body.Close()
 
 		body, err := ioutil.ReadAll(resp.Body)
 		util.CheckError(err)

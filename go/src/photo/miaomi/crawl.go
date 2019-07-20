@@ -141,7 +141,7 @@ func Crawl(crawlUrl string) {
 				CrawlUrl: webUrl,
 			}
 			photo.HandlePhotoRows(oss, photos, nextAbsoluteUrl)
-			time.Sleep(30 * time.Second)
+			//time.Sleep(30 * time.Second)
 
 		}
 
