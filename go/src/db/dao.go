@@ -13,6 +13,8 @@ const MAOMI = "https://www.968uy.com/tupian/12457.html"
 func UpdateOssCrawlUrl(crawlUrl string, novelId int) {
 	stmt, err := Mysql.Prepare(`UPDATE oss SET crawl_url=? WHERE id=?`)
 	util.CheckError(err)
+	defer stmt.Close()
+
 	res, err := stmt.Exec(crawlUrl, novelId)
 	util.CheckError(err)
 	num, err := res.RowsAffected()
@@ -35,6 +37,7 @@ func QueryKeyValue(key string) string {
 func InsertKeyValue(key string, value string) {
 	stmt, err := Mysql.Prepare("INSERT key_value (`key`, value) values (?,?)")
 	util.CheckError(err)
+	defer stmt.Close()
 
 	_, err = stmt.Exec(key, value)
 	util.CheckError(err)
@@ -42,6 +45,8 @@ func InsertKeyValue(key string, value string) {
 func UpdateKeyValue(key string, value string) {
 	stmt, err := Mysql.Prepare("UPDATE key_value SET value = ? WHERE `key`= ? ")
 	util.CheckError(err)
+	defer stmt.Close()
+
 	res, err := stmt.Exec(value, key)
 	util.CheckError(err)
 	num, err := res.RowsAffected()
@@ -80,6 +85,7 @@ func CheckPhotoExist(crawl_url string) (bool, int) {
 func InsertOss(row OssRow) int {
 	stmt, err := Mysql.Prepare("INSERT oss (name, type, crawl_url) values (?,?,?)")
 	util.CheckError(err)
+	defer stmt.Close()
 
 	res, err := stmt.Exec(row.Name, row.Type, row.CrawlUrl)
 	util.CheckError(err)
@@ -91,6 +97,7 @@ func InsertOss(row OssRow) int {
 func InsertPhoto(row PhotoRow) int {
 	stmt, err := Mysql.Prepare("INSERT photo (title, url, crawl_url, oss_id, `index`) values (?,?,?,?,?)")
 	util.CheckError(err)
+	defer stmt.Close()
 
 	res, err := stmt.Exec(row.Title, row.Url, row.CrawlUrl, row.OssId, row.Index)
 	util.CheckError(err)
@@ -120,6 +127,8 @@ func QueryEmptyPhotos(imageTypes []interface{}) map[int]map[string]string {
 func UpdatePhotoUrl(id int, url string) {
 	stmt, err := Mysql.Prepare(`UPDATE photo SET url=? WHERE id=?`)
 	util.CheckError(err)
+	defer stmt.Close()
+
 	res, err := stmt.Exec(url, id)
 	util.CheckError(err)
 	num, err := res.RowsAffected()

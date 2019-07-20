@@ -50,6 +50,7 @@ func insertNewNovel(name string, crawlUrl string) db.OssRow {
 	fmt.Println("insertNewNovel", name)
 	stmt, err := mysql.Prepare(`INSERT oss (name, type, url, crawl_url) values (?,?,?,?)`)
 	util.CheckError(err)
+	defer stmt.Close()
 
 	_, err = stmt.Exec(name, NOVEL__TYPE, nil, crawlUrl)
 	util.CheckError(err)
@@ -83,6 +84,7 @@ func HandleNovelRow(novel db.NovelRow) {
 
 	stmt, err := mysql.Prepare(`INSERT novel (chapter_index, chapter_title, oss_id, content, crawl_url, next_crawl_url) values (?,?,?,?,?,?)`)
 	util.CheckError(err)
+	defer stmt.Close()
 
 	res, err := stmt.Exec(latestChapterIndex+1, novel.Title, novel.OssId, novel.Content, novel.CrawlUrl, novel.NextCrawlUrl)
 	util.CheckError(err)
@@ -97,6 +99,8 @@ func updateNextCrawlUrl(novelId int, nextCrawlUrl string) {
 	}
 	stmt, err := mysql.Prepare(`UPDATE novel SET next_crawl_url=? WHERE id=?`)
 	util.CheckError(err)
+	defer stmt.Close()
+
 	res, err := stmt.Exec(nextCrawlUrl, novelId)
 	util.CheckError(err)
 	num, err := res.RowsAffected()
