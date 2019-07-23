@@ -33,8 +33,6 @@ func loopTask(imageTypes []interface{}) {
 	}
 }
 
-
-
 func task(imageTypes []interface{}) {
 
 	rows := db.QueryEmptyPhotos(imageTypes)
@@ -61,10 +59,9 @@ func task(imageTypes []interface{}) {
 		fmt.Println("sync proxyUrl", proxyUrl)
 		var tr = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-			Proxy: http.ProxyURL(proxyUrl),
+			Proxy:           http.ProxyURL(proxyUrl),
 		}
 		client := &http.Client{Transport: tr}
-
 
 		resp, err := client.Get(crawlUrl)
 

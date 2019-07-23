@@ -3,20 +3,42 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/go-sql-driver/mysql"
+	"github.com/lin1heart/spider/go/src/ssh"
 	"github.com/lin1heart/spider/go/src/util"
+	"net"
 )
 import _ "github.com/go-sql-driver/mysql"
 
 var Mysql *sql.DB
 
 func init() {
-	defer fmt.Println("deferred")
+	fmt.Println("mysql init", util.ENV)
+
+	if util.ENV == "prod" {
+		var err error
+		Mysql, err = sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider?charset=utf8")
+		util.CheckError(err)
+
+		Mysql.SetMaxOpenConns(20)
+		Mysql.SetMaxIdleConns(10)
+		Mysql.Ping()
+		return
+	}
+	dbUser := "root"           // DB username
+	dbPass := "root"           // DB Password
+	dbHost := "127.0.0.1:3306" // DB Hostname/IP
+	dbName := "spider"         // Database name
+
+	mysql.RegisterDial("tcpchannel", func(addr string) (net.Conn, error) {
+		return ssh.SshClient.Dial("tcp", addr)
+	})
 
 	var err error
-	Mysql, err = sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider?charset=utf8")
+	Mysql, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcpchannel(%s)/%s", dbUser, dbPass, dbHost, dbName))
 	util.CheckError(err)
-
-	Mysql.SetMaxOpenConns(20)
+	fmt.Printf("Successfully connected to the db\n")
+	//Mysql.SetMaxOpenConns(20)
 	Mysql.SetMaxIdleConns(10)
 	Mysql.Ping()
 

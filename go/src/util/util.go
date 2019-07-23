@@ -15,6 +15,7 @@ var ENTRY = ""
 var UPLOAD_BASE = "http://192.168.1.6:8888"
 
 func init() {
+	fmt.Println("util init")
 	if len(args) >= 2 {
 		ENTRY = args[1]
 	}
@@ -73,10 +74,10 @@ func FilterEmoji(content string) string {
 var ProxyList = []string{
 	//"socks5://127.0.0.1:1080",
 	"socks5://39.104.226.149:1080", // jj
-	"socks5://47.96.123.41:1080", // lin
-	"socks5://3.0.176.116:1080", // aws jj
-	"socks5://47.101.60.252:1080", // pawl
-	"socks5://3.113.16.157:1080", // aws lin
+	"socks5://47.96.123.41:1080",   // lin
+	"socks5://3.0.176.116:1080",    // aws jj
+	"socks5://47.101.60.252:1080",  // pawl
+	"socks5://3.113.16.157:1080",   // aws lin
 
 }
 

@@ -1,7 +1,6 @@
 package ssh
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/lin1heart/spider/go/src/util"
 	"golang.org/x/crypto/ssh"
@@ -10,18 +9,34 @@ import (
 	"time"
 )
 
-func connect(user, password, host, key string, port int, cipherList []string) (*ssh.Session, error) {
+var SshClient *ssh.Client
+
+func init() {
+	fmt.Println("ssh init ")
+	const (
+		username = "root"
+		password = ""
+		ip       = "39.104.226.149"
+		port     = 22
+		key      = "/Users/hikaruamano/.ssh/id_rsa"
+	)
+	ciphers := []string{}
+	var err error
+	SshClient, err = connect(username, password, ip, key, port, ciphers)
+	util.CheckError(err)
+}
+
+func connect(user, password, host, key string, port int, cipherList []string) (*ssh.Client, error) {
 	var (
 		auth         []ssh.AuthMethod
 		addr         string
 		clientConfig *ssh.ClientConfig
 		client       *ssh.Client
 		config       ssh.Config
-		session      *ssh.Session
-		err          error
+		//session      *ssh.Session
+		err error
 	)
 
-	fmt.Println("connect start")
 	// get auth method
 	auth = make([]ssh.AuthMethod, 0)
 	if key == "" {
@@ -67,45 +82,6 @@ func connect(user, password, host, key string, port int, cipherList []string) (*
 	// connet to ssh
 	addr = fmt.Sprintf("%s:%d", host, port)
 
-	if client, err = ssh.Dial("tcp", addr, clientConfig); err != nil {
-		return nil, err
-	}
-
-	// create session
-	if session, err = client.NewSession(); err != nil {
-		return nil, err
-	}
-
-	modes := ssh.TerminalModes{
-		ssh.ECHO:          0,     // disable echoing
-		ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
-		ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
-	}
-
-	if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
-		return nil, err
-	}
-
-	return session, nil
-}
-
-const (
-	username = "root"
-	password = ""
-	ip       = "39.104.226.149"
-	port     = 22
-	cmd      = "ls"
-	key      = "/Users/hikaruamano/.ssh/id_rsa"
-)
-
-func main() {
-	ciphers := []string{}
-	session, err := connect(username, password, ip, key, port, ciphers)
-	util.CheckError(err)
-	defer session.Close()
-	var stdoutBuf bytes.Buffer
-	session.Stdout = &stdoutBuf
-	session.Run(cmd)
-
-	fmt.Println(session.Stdout)
+	client, err = ssh.Dial("tcp", addr, clientConfig)
+	return client, err
 }
