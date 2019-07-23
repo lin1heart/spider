@@ -113,6 +113,23 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:4d40045409ff4ad024dc87c28ea31ff4207b574764e0b8f6ee6dcbb3b420285a"
+  name = "golang.org/x/crypto"
+  packages = [
+    "curve25519",
+    "ed25519",
+    "ed25519/internal/edwards25519",
+    "internal/chacha20",
+    "internal/subtle",
+    "poly1305",
+    "ssh",
+    "ssh/agent",
+  ]
+  pruneopts = "UT"
+  revision = "4def268fd1a49955bfb3dda92fe3db4f924f2285"
+
+[[projects]]
+  branch = "master"
   digest = "1:71a3e45347f39ad3b05480f73358ffbd1f842be417ecc37922776a6173972e0f"
   name = "golang.org/x/net"
   packages = [
@@ -123,6 +140,14 @@
   ]
   pruneopts = "UT"
   revision = "3b0461eec859c4b73bb64fdc8285971fd33e3938"
+
+[[projects]]
+  branch = "master"
+  digest = "1:9289797869517c73400e7b5a93beefbfc86e06f56e3ab03f38fb0d575e685277"
+  name = "golang.org/x/sys"
+  packages = ["cpu"]
+  pruneopts = "UT"
+  revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
 
 [[projects]]
   digest = "1:8a0baffd5559acaa560f854d7d525c02f4fec2d4f8a214398556fb661a10f6e0"
@@ -176,7 +201,8 @@
     "github.com/go-sql-driver/mysql",
     "github.com/gocolly/colly",
     "github.com/gocolly/colly/proxy",
-    "golang.org/x/net/html",
+    "golang.org/x/crypto/ssh",
+    "golang.org/x/crypto/ssh/agent",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
