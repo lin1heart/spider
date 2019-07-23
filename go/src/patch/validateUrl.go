@@ -43,7 +43,6 @@ var client = &http.Client{Transport: tr}
 
 func validate(url string, id int) bool {
 
-
 	resp, err := client.Get(url)
 	util.CheckError(err)
 
