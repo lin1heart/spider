@@ -13,6 +13,7 @@ var args = os.Args
 var ENV = os.Getenv("ENV")
 var ENTRY = ""
 var UPLOAD_BASE = "http://192.168.1.6:8888"
+var Pid = os.Getpid()
 
 func init() {
 	fmt.Println("util init")
@@ -27,9 +28,10 @@ func init() {
 		ProxyList = append(ProxyList, "socks5://192.168.1.6:1080")
 	}
 
-	fmt.Println("ProxyList", ProxyList)
-	fmt.Println("ENV", ENV)
-	fmt.Println("ENTRY", ENTRY)
+	fmt.Println("ProxyList:", ProxyList)
+	fmt.Println("ENV:", ENV)
+	fmt.Println("ENTRY:", ENTRY)
+	fmt.Println("Pid:", Pid)
 }
 
 func CheckError(errMasg error) {
