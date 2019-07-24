@@ -82,9 +82,6 @@ func Crawl(crawlUrl string) {
 		case "卡通动漫":
 			photoType = "PHOTO_COMIC"
 			break
-		case "极品美女":
-			photoType = "PHOTO_RANK"
-			break
 		}
 
 		e.ForEach(".content img", func(_ int, elem *colly.HTMLElement) {
@@ -153,6 +150,16 @@ func Crawl(crawlUrl string) {
 
 	c.OnResponse(func(r *colly.Response) {
 		fmt.Println("Visited", r.Request.URL, r.StatusCode)
+		splits := strings.Split(fmt.Sprintf("%s",r.Request.URL), "/")
+		if len(splits) == 3 {
+			fmt.Println("new site", r.Request.URL, r.StatusCode)
+
+			originSplits := strings.Split(crawlUrl, "/")
+
+			newUrl := fmt.Sprintf("%s/%s/%s", r.Request.URL, originSplits[3], originSplits[4])
+			fmt.Println("new Url", newUrl)
+			db.InsertKeyValue(db.MAOMI_KEY, newUrl)
+		}
 	})
 
 	c.OnScraped(func(r *colly.Response) {
