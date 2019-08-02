@@ -43,7 +43,7 @@ func InsertKeyValue(key string, value string) {
 	util.CheckError(err)
 }
 func UpdateKeyValue(key string, value string) {
-	stmt, err := Mysql.Prepare("UPDATE key_value SET value = ? WHERE `key`= ? ")
+	stmt, err := Mysql.Prepare("UPDATE key_value SET value = ? WHERE `key`= ? ORDER BY id DESC limit 1")
 	util.CheckError(err)
 	defer stmt.Close()
 
