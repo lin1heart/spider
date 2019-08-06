@@ -6,7 +6,7 @@ import (
 )
 
 func QueryPhotoAfterRow(rowIndex int, inteval int) map[int]map[string]string {
-	sqlString := fmt.Sprintf("SELECT * FROM photo WHERE (url != '' AND url is not null ) LIMIT %d,%d", rowIndex, inteval)
+	sqlString := fmt.Sprintf("SELECT * FROM photo WHERE (url != '' AND url is not null ) AND id > %d LIMIT %d", rowIndex, inteval)
 	rows, err := Mysql.Query(sqlString)
 	util.CheckError(err)
 
