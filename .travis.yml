@@ -17,7 +17,7 @@ script:
 - pwd
 - echo $GOPATH
 - echo $TRAVIS_BRANCH
-- CGO_ENABLED=0 go build -o spider ./go/src
+- GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=0 go build -o spider ./go/src
 - docker build -f go/Dockerfile -t amanohikaru/spider .
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker push amanohikaru/spider

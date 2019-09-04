@@ -28,7 +28,7 @@ func crawlNovelChapters(id int, basehref string) {
 	}()
 
 	var counter = 0
-	var minHtmlIndex = 99999999999
+	var minHtmlIndex = 999999999
 	var htmlhref = ""
 
 	c := colly.NewCollector(

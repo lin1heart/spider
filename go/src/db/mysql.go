@@ -3,10 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/go-sql-driver/mysql"
-	"github.com/lin1heart/spider/go/src/ssh"
 	"github.com/lin1heart/spider/go/src/util"
-	"net"
 )
 import _ "github.com/go-sql-driver/mysql"
 
@@ -28,22 +25,22 @@ func init() {
 		Mysql.Ping()
 		return
 	}
-	dbUser := "root"           // DB username
-	dbPass := "root"           // DB Password
-	dbHost := "127.0.0.1:3306" // DB Hostname/IP
-	dbName := "spider"         // Database name
-
-	mysql.RegisterDial("tcpchannel", func(addr string) (net.Conn, error) {
-		return ssh.SshClient.Dial("tcp", addr)
-	})
-
-	var err error
-	Mysql, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcpchannel(%s)/%s", dbUser, dbPass, dbHost, dbName))
-	util.CheckError(err)
-	fmt.Printf("Successfully connected to the db\n")
-	//Mysql.SetMaxOpenConns(20)
-	Mysql.SetMaxIdleConns(10)
-	Mysql.Ping()
+	//dbUser := "root"           // DB username
+	//dbPass := "root"           // DB Password
+	//dbHost := "127.0.0.1:3306" // DB Hostname/IP
+	//dbName := "spider"         // Database name
+	//
+	//mysql.RegisterDial("tcpchannel", func(addr string) (net.Conn, error) {
+	//	return ssh.SshClient.Dial("tcp", addr)
+	//})
+	//
+	//var err error
+	//Mysql, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcpchannel(%s)/%s", dbUser, dbPass, dbHost, dbName))
+	//util.CheckError(err)
+	//fmt.Printf("Successfully connected to the db\n")
+	////Mysql.SetMaxOpenConns(20)
+	//Mysql.SetMaxIdleConns(10)
+	//Mysql.Ping()
 
 }
 
