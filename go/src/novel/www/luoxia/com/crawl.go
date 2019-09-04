@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/gocolly/colly"
-	"github.com/gocolly/colly/proxy"
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/novel"
 	"github.com/lin1heart/spider/go/src/util"
@@ -31,14 +30,14 @@ func Crawl(name string, crawlUrl string) {
 		colly.UserAgent(util.RandomString()),
 	)
 
-	randomProxy := util.RandomProxy()
-	fmt.Println("random proxy ", randomProxy)
-
-	rp, err1 := proxy.RoundRobinProxySwitcher(randomProxy)
-	if err1 != nil {
-		fmt.Println("roundRobin ", err1)
-	}
-	c.SetProxyFunc(rp)
+	//randomProxy := util.RandomProxy()
+	//fmt.Println("random proxy ", randomProxy)
+	//
+	//rp, err1 := proxy.RoundRobinProxySwitcher(randomProxy)
+	//if err1 != nil {
+	//	fmt.Println("roundRobin ", err1)
+	//}
+	//c.SetProxyFunc(rp)
 
 	c.WithTransport(&http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},

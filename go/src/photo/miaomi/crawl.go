@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/gocolly/colly"
-	"github.com/gocolly/colly/proxy"
 	"github.com/lin1heart/spider/go/src/db"
 	"github.com/lin1heart/spider/go/src/photo"
 	"github.com/lin1heart/spider/go/src/util"
@@ -27,14 +26,14 @@ func Crawl(crawlUrl string) {
 		colly.UserAgent(util.RandomString()),
 	)
 
-	randomProxy := util.RandomProxy()
-	fmt.Println("random proxy ", randomProxy)
-
-	rp, err1 := proxy.RoundRobinProxySwitcher(randomProxy)
-	if err1 != nil {
-		fmt.Println("roundRobin ", err1)
-	}
-	c.SetProxyFunc(colly.ProxyFunc(rp))
+	//randomProxy := util.RandomProxy()
+	//fmt.Println("random proxy ", randomProxy)
+	//
+	//rp, err1 := proxy.RoundRobinProxySwitcher(randomProxy)
+	//if err1 != nil {
+	//	fmt.Println("roundRobin ", err1)
+	//}
+	//c.SetProxyFunc(colly.ProxyFunc(rp))
 
 	c.WithTransport(&http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -150,7 +149,7 @@ func Crawl(crawlUrl string) {
 
 	c.OnResponse(func(r *colly.Response) {
 		fmt.Println("Visited", r.Request.URL, r.StatusCode)
-		splits := strings.Split(fmt.Sprintf("%s",r.Request.URL), "/")
+		splits := strings.Split(fmt.Sprintf("%s", r.Request.URL), "/")
 		if len(splits) == 3 {
 			fmt.Println("new site", r.Request.URL, r.StatusCode)
 
@@ -191,6 +190,7 @@ func loopCrawl() {
 }
 
 func Main() {
-	go loopCrawl()
-	photo.Sync()
+	loopCrawl()
+	//go loopCrawl()
+	//photo.Sync()
 }

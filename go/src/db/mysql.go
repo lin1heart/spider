@@ -15,9 +15,12 @@ var Mysql *sql.DB
 func init() {
 	fmt.Println("mysql init", util.ENV)
 
-	if util.ENV == "prod" {
+	//  only use mysql directly
+	if util.ENV != "aaaaaaaa" {
 		var err error
-		Mysql, err = sql.Open("mysql", "root:root@tcp(39.104.226.149:3306)/spider?charset=utf8")
+		source := fmt.Sprintf("root:root@tcp(%s:%s)/spider?charset=utf8", util.DB_HOST, util.DB_PORT)
+		fmt.Println("db source", source)
+		Mysql, err = sql.Open("mysql", source)
 		util.CheckError(err)
 
 		Mysql.SetMaxOpenConns(20)

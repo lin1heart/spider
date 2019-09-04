@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 )
@@ -55,11 +54,11 @@ func task(imageTypes []interface{}) {
 
 		fmt.Println("download ", ossId, crawlUrl, fileName)
 
-		proxyUrl, err := url.Parse(util.RandomProxy())
-		fmt.Println("sync proxyUrl", proxyUrl)
+		//proxyUrl, err := url.Parse(util.RandomProxy())
+		//fmt.Println("sync proxyUrl", proxyUrl)
 		var tr = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-			Proxy:           http.ProxyURL(proxyUrl),
+			//Proxy:           http.ProxyURL(proxyUrl),
 		}
 		client := &http.Client{Transport: tr}
 

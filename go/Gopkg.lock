@@ -113,7 +113,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4d40045409ff4ad024dc87c28ea31ff4207b574764e0b8f6ee6dcbb3b420285a"
+  digest = "1:ffebede762b00a7ffe84ef08efc4f4e87823b5298b4fd477313579f553db0c6a"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
@@ -123,7 +123,6 @@
     "internal/subtle",
     "poly1305",
     "ssh",
-    "ssh/agent",
   ]
   pruneopts = "UT"
   revision = "4def268fd1a49955bfb3dda92fe3db4f924f2285"
@@ -202,7 +201,6 @@
     "github.com/gocolly/colly",
     "github.com/gocolly/colly/proxy",
     "golang.org/x/crypto/ssh",
-    "golang.org/x/crypto/ssh/agent",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

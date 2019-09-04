@@ -13,6 +13,8 @@ var args = os.Args
 var ENV = os.Getenv("ENV")
 var ENTRY = ""
 var UPLOAD_BASE = "http://192.168.1.6:8888"
+var DB_HOST = os.Getenv("DB_HOST")
+var DB_PORT = os.Getenv("DB_PORT")
 var Pid = os.Getpid()
 
 func init() {
@@ -24,10 +26,11 @@ func init() {
 	if osUpload != "" {
 		UPLOAD_BASE = osUpload
 	}
-	if ENV == "local" {
-		ProxyList = append(ProxyList, "socks5://192.168.1.6:1080")
-		ProxyList = append(ProxyList, "socks5://192.168.1.6:1080")
-		ProxyList = append(ProxyList, "socks5://192.168.1.6:1080")
+	if DB_HOST == "" {
+		DB_HOST = "218.168.168.105"
+	}
+	if DB_PORT == "" {
+		DB_PORT = "3306"
 	}
 
 	fmt.Println("ProxyList:", ProxyList)
@@ -78,8 +81,8 @@ func FilterEmoji(content string) string {
 var ProxyList = []string{
 	//"socks5://127.0.0.1:1080",
 	"socks5://39.104.226.149:1080", // jj
-	"socks5://47.96.123.41:1080",   // lin
-	"socks5://47.101.60.252:1080",  // pawl
+	//"socks5://47.96.123.41:1080",   // lin
+	//"socks5://47.101.60.252:1080",  // pawl
 	//"socks5://3.0.176.116:1080",    // aws jj
 	//"socks5://3.113.16.157:1080",   // aws lin
 
