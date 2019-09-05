@@ -1,4 +1,4 @@
-FROM balenalib/generic-armv7ahf-alpine-node:11-edge-run
+FROM arm32v7/alpine
 
 COPY ./spider .
 

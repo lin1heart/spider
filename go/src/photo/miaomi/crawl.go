@@ -145,6 +145,7 @@ func Crawl(crawlUrl string) {
 
 	c.OnError(func(_ *colly.Response, err error) {
 		fmt.Println("Something went wrong:", err)
+		time.Sleep(time.Minute * 1)
 	})
 
 	c.OnResponse(func(r *colly.Response) {
