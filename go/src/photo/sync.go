@@ -76,7 +76,7 @@ func task(imageTypes []interface{}) {
 		//out, _ := os.Create(fileName)
 		//io.Copy(out, bytes.NewReader(body))
 
-		uploadUrl := fmt.Sprintf(`%s/%s/%s`, util.UPLOAD_BASE, ossId, index)
+		uploadUrl := fmt.Sprintf(`%s/%s/%s`, util.IMG_ENDPOINT, ossId, index)
 
 		err = upload(uploadUrl, body)
 		if err != nil {

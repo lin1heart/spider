@@ -12,7 +12,7 @@ import (
 var args = os.Args
 var ENV = os.Getenv("ENV")
 var ENTRY = ""
-var UPLOAD_BASE = "http://192.168.1.6:8888"
+var IMG_ENDPOINT = os.Getenv("IMG_ENDPOINT")
 var DB_HOST = os.Getenv("DB_HOST")
 var DB_PORT = os.Getenv("DB_PORT")
 var Pid = os.Getpid()
@@ -22,15 +22,18 @@ func init() {
 	if len(args) >= 2 {
 		ENTRY = args[1]
 	}
-	osUpload := os.Getenv("UPLOAD_BASE")
+	osUpload := os.Getenv("IMG_ENDPOINT")
 	if osUpload != "" {
-		UPLOAD_BASE = osUpload
+		IMG_ENDPOINT = osUpload
 	}
 	if DB_HOST == "" {
 		DB_HOST = "218.168.168.105"
 	}
 	if DB_PORT == "" {
 		DB_PORT = "3306"
+	}
+	if IMG_ENDPOINT == "" {
+		IMG_ENDPOINT = "http://218.168.168.105:8888"
 	}
 
 	fmt.Println("ProxyList:", ProxyList)

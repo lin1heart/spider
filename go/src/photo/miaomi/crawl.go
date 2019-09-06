@@ -191,7 +191,7 @@ func loopCrawl() {
 }
 
 func Main() {
-	loopCrawl()
-	//go loopCrawl()
-	//photo.Sync()
+	//loopCrawl()
+	go loopCrawl()
+	photo.Sync()
 }
