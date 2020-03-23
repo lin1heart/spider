@@ -108,6 +108,7 @@ func upload(url string, file []byte) error {
 	contentType := writer.FormDataContentType()
 	writer.Close() // 发送之前必须调用Close()以写入结尾行
 	resp, err := http.Post(url, contentType, buf)
+	util.CheckError(err)
 	defer resp.Body.Close()
 
 	return err
